@@ -41,6 +41,11 @@
 			<artifactId>google-collections</artifactId>
 			<version>1.0-rc5</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<version>2.6.10</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
