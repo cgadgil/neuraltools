@@ -34,16 +34,16 @@ public class FundamentalScrape {
 			}
 			for (HtmlElement theCell : theCells) {
 				String theText = trim(theCell.getTextContent().replaceAll(",", ""));
-				if(theText.isEmpty()) {
+				if(theText.isEmpty() || theText.length() == 1) {
 					continue;
 				}
-				//System.out.print(theText + "\t");
+				System.out.print(theText + "\t");
 				//System.out.println(theText.getBytes());
 				row.add(theText);
 			}
 			if(row.size() == 6) {
 				theData.add(row);
-				System.out.println(row);
+				System.out.println();
 			}
 		}
 		System.out.println(theHtmlElement);
