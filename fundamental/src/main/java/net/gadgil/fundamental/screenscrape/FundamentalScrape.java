@@ -11,7 +11,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class FundamentalScrape {
 
-	public static List<List<String>> getFinancialData(String symbol,
+	public static List<List<String>> getFinancialDataFromMoneyCentral(String symbol,
 			String annualOrQuarterly, String typeOfStatement) throws Throwable {
 		List<List<String>> theData = new ArrayList<List<String>>();
 		WebClient theWebClient = new WebClient(BrowserVersion.FIREFOX_3);
@@ -33,55 +33,45 @@ public class FundamentalScrape {
 				continue;
 			}
 			for (HtmlElement theCell : theCells) {
-				String theText = trim(theCell.getTextContent().replaceAll(",", ""));
+				String theText = theCell.getTextContent().replaceAll(",", "").trim();
 				if(theText.isEmpty() || theText.length() == 1) {
+					if(row.size() > 0) {
+						System.err.println("Skipping data for " + row);
+					}
 					continue;
 				}
-				System.out.print(theText + "\t");
+				//System.out.print(theText + "\t");
 				//System.out.println(theText.getBytes());
 				row.add(theText);
 			}
 			if(row.size() == 6) {
 				theData.add(row);
-				System.out.println();
+				//System.out.println();
 			}
 		}
-		System.out.println(theHtmlElement);
+		//System.out.println(theHtmlElement);
 		return theData;
-
 	}
 
-    /* remove leading whitespace */
-    public static String ltrim(String source) {
-        return source.replaceAll("^\\s+", "");
-    }
-
-    /* remove trailing whitespace */
-    public static String rtrim(String source) {
-        return source.replaceAll("\\s+$", "");
-    }
-
-    /* replace multiple whitespaces between words with single blank */
-    public static String itrim(String source) {
-        return source.replaceAll("\\b\\s{2,}\\b", " ");
-    }
-
-    /* remove all superfluous whitespaces in source string */
-    public static String trim(String source) {
-        return itrim(ltrim(rtrim(source)));
-    }
-
-    public static String lrtrim(String source){
-        return ltrim(rtrim(source));
-    }
-
+	public static void printTabSeparated(List<List<String>> tableData) {
+		for(List<String> theRow: tableData) {
+			for(String theCell: theRow) {
+				System.out.print(theCell + "\t");
+			}
+			System.out.println("END-OF-LINE");
+		}
+	}
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) throws Throwable {
 		// TODO Auto-generated method stub
-		getFinancialData("ADCT", "Ann", "Balance");
+		List<List<String>> theBalanceSheetData = getFinancialDataFromMoneyCentral("C", "Ann", "Balance");
+		List<List<String>> theCashFlowData = getFinancialDataFromMoneyCentral("C", "Ann", "CashFlow");
+		List<List<String>> theIncomeStatementData = getFinancialDataFromMoneyCentral("C", "Ann", "Income");
+		//printTabSeparated(theBalanceSheetData);
+		printTabSeparated(theCashFlowData);
+		//printTabSeparated(theIncomeStatementData);
 	}
-
 }
