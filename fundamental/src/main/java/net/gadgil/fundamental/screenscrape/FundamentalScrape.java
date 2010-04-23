@@ -106,7 +106,7 @@ public class FundamentalScrape {
 		List<List<String>> theBalanceSheetData = getFinancialDataFromMoneyCentral(
 				"CVV", "Ann", "Balance");
 		List<List<String>> theCashFlowData = getFinancialDataFromMoneyCentral(
-				"CVV", "Ann", "CashFlow");
+				"GOOG", "Ann", "CashFlow");
 		List<List<String>> theIncomeStatementData = getFinancialDataFromMoneyCentral(
 				"CVV", "Ann", "Income");
 		// printTabSeparated(theBalanceSheetData);
