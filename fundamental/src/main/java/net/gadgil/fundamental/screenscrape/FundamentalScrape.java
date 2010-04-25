@@ -1,7 +1,9 @@
 package net.gadgil.fundamental.screenscrape;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.Page;
@@ -64,16 +66,17 @@ public class FundamentalScrape {
 		}
 	}
 
-	public static void addPrefixes(List<List<String>> tableData, String symbol, String timestamp) {
-		if(tableData.size() == 0) {
+	public static void addPrefixes(List<List<String>> tableData, String symbol,
+			String timestamp) {
+		if (tableData.size() == 0) {
 			return;
 		}
 		int len = tableData.get(0).size();
 		List<String> newRow1 = new ArrayList<String>();
 		List<String> newRow2 = new ArrayList<String>();
 		List<String> newRow3 = new ArrayList<String>();
-		for(int i=0; i<len; i++) {
-			if(i == 0) {
+		for (int i = 0; i < len; i++) {
+			if (i == 0) {
 				newRow1.add("Symbol");
 				newRow2.add("Timestamp");
 				newRow3.add("Period");
@@ -87,24 +90,49 @@ public class FundamentalScrape {
 		tableData.add(0, newRow2);
 		tableData.add(0, newRow1);
 	}
-	
-	public static List<List<String>> transposeListOfLists(List<List<String>> tableData) {
+
+	// For each period (e.g. year), create a separate table
+	public static List<List<Map<String, String>>> splitIntoYearly(
+			List<List<String>> tableData) {
+		List<List<Map<String, String>>> theSplitTables = new ArrayList<List<Map<String, String>>>();
+		if (tableData.size() == 0) {
+			return theSplitTables;
+		}
+		int numPeriods = tableData.get(0).size() - 1;
+		// Create an empty table for each period
+		for (int k = 0; k < numPeriods; k++) {
+			List<Map<String, String>> theSplitTable = new ArrayList<Map<String, String>>();
+			theSplitTables.add(theSplitTable);
+			// For each row of the original table
+			for (int i = 0; i < tableData.size(); i++) {
+				List<String> theTableRow = tableData.get(i);
+				Map<String, String> theSplitRow = new HashMap<String, String>();
+				// Each table contains, the first column as the name and the (k+1)th element as the value
+				theSplitRow.put(theTableRow.get(0), theTableRow.get(k+1));
+				theSplitTable.add(theSplitRow);
+			}
+		}
+		return theSplitTables;
+	}
+
+	public static List<List<String>> transposeListOfLists(
+			List<List<String>> tableData) {
 		List<List<String>> theData = new ArrayList<List<String>>();
-		if(tableData.size() == 0) {
+		if (tableData.size() == 0) {
 			return theData;
 		}
 		int newNumberOfColumns = tableData.size();
 		int newNumberOfRows = tableData.get(0).size();
-		for(int i=0; i<newNumberOfRows; i++) {
+		for (int i = 0; i < newNumberOfRows; i++) {
 			List<String> theRow = new ArrayList<String>();
-			for(int j=0; j<newNumberOfColumns; j++) {
+			for (int j = 0; j < newNumberOfColumns; j++) {
 				theRow.add(tableData.get(j).get(i));
 			}
 			theData.add(theRow);
 		}
 		return theData;
 	}
-	
+
 	public static void printTabSeparatedTransposed(String symbol,
 			String annualOrQuarterly) throws Throwable {
 		List<List<String>> theBalanceSheetData = getFinancialDataFromMoneyCentral(
@@ -135,7 +163,10 @@ public class FundamentalScrape {
 				"CVV", "Ann", "Income");
 		// printTabSeparated(theBalanceSheetData);
 		addPrefixes(theCashFlowData, "GOOG", "4/23/2010");
-		printTabSeparated(theCashFlowData);
+		List<List<Map<String, String>>> theSplitData = splitIntoYearly(theCashFlowData);
+		//printTabSeparated(theSplitData.get(0));
+		System.out.println(theSplitData.get(0));
+		System.out.println(theSplitData.get(1));
 		// printTabSeparated(theIncomeStatementData);
 	}
 }
