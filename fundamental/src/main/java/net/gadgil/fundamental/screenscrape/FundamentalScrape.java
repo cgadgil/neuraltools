@@ -1,9 +1,12 @@
 package net.gadgil.fundamental.screenscrape;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.json.JSONArray;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.Page;
@@ -14,47 +17,51 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public class FundamentalScrape {
 
 	public static List<List<String>> getFinancialDataFromMoneyCentral(
-			String symbol, String annualOrQuarterly, String typeOfStatement)
-			throws Throwable {
-		List<List<String>> theData = new ArrayList<List<String>>();
-		WebClient theWebClient = new WebClient(BrowserVersion.FIREFOX_3);
-		HtmlPage thePage = theWebClient
-				.getPage("http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?Symbol="
-						+ symbol
-						+ "&lstStatement="
-						+ typeOfStatement
-						+ "&stmtView=" + annualOrQuarterly);
-		HtmlElement theHtmlElement = thePage.getElementById("StatementDetails");
-		List<HtmlElement> theElements = theHtmlElement.getElementsByAttribute(
-				"table", "class", "ftable");
-		HtmlElement theTable = theElements.get(0);
-		List<HtmlElement> theRows = theTable.getElementsByTagName("tr");
-		for (HtmlElement theRow : theRows) {
-			List<HtmlElement> theCells = theRow.getElementsByTagName("td");
-			List<String> row = new ArrayList<String>();
-			if (theCells.size() != 6) {
-				continue;
-			}
-			for (HtmlElement theCell : theCells) {
-				String theText = theCell.getTextContent().replaceAll(",", "")
-						.trim();
-				if (theText.isEmpty() || theText.length() == 1) {
-					if (row.size() > 0) {
-						System.err.println("Skipping data for " + row);
-					}
+			String symbol, String annualOrQuarterly, String typeOfStatement) {
+		try {
+			List<List<String>> theData = new ArrayList<List<String>>();
+			WebClient theWebClient = new WebClient(BrowserVersion.FIREFOX_3);
+			HtmlPage thePage = theWebClient
+					.getPage("http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?Symbol="
+							+ symbol
+							+ "&lstStatement="
+							+ typeOfStatement
+							+ "&stmtView=" + annualOrQuarterly);
+			HtmlElement theHtmlElement = thePage
+					.getElementById("StatementDetails");
+			List<HtmlElement> theElements = theHtmlElement
+					.getElementsByAttribute("table", "class", "ftable");
+			HtmlElement theTable = theElements.get(0);
+			List<HtmlElement> theRows = theTable.getElementsByTagName("tr");
+			for (HtmlElement theRow : theRows) {
+				List<HtmlElement> theCells = theRow.getElementsByTagName("td");
+				List<String> row = new ArrayList<String>();
+				if (theCells.size() != 6) {
 					continue;
 				}
-				// System.out.print(theText + "\t");
-				// System.out.println(theText.getBytes());
-				row.add(theText);
+				for (HtmlElement theCell : theCells) {
+					String theText = theCell.getTextContent().replaceAll(",",
+							"").trim();
+					if (theText.isEmpty() || theText.length() == 1) {
+						if (row.size() > 0) {
+							System.err.println("Skipping data for " + row);
+						}
+						continue;
+					}
+					// System.out.print(theText + "\t");
+					// System.out.println(theText.getBytes());
+					row.add(theText);
+				}
+				if (row.size() == 6) {
+					theData.add(row);
+					// System.out.println();
+				}
 			}
-			if (row.size() == 6) {
-				theData.add(row);
-				// System.out.println();
-			}
+			// System.out.println(theHtmlElement);
+			return theData;
+		} catch (Throwable t) {
+			throw new RuntimeException(t);
 		}
-		// System.out.println(theHtmlElement);
-		return theData;
 	}
 
 	public static void printTabSeparated(List<List<String>> tableData) {
@@ -67,7 +74,7 @@ public class FundamentalScrape {
 	}
 
 	public static void addPrefixes(List<List<String>> tableData, String symbol,
-			String timestamp) {
+			String timestamp, String typeOfStatement, String periodType) {
 		if (tableData.size() == 0) {
 			return;
 		}
@@ -75,17 +82,25 @@ public class FundamentalScrape {
 		List<String> newRow1 = new ArrayList<String>();
 		List<String> newRow2 = new ArrayList<String>();
 		List<String> newRow3 = new ArrayList<String>();
+		List<String> newRow4 = new ArrayList<String>();
+		List<String> newRow5 = new ArrayList<String>();
 		for (int i = 0; i < len; i++) {
 			if (i == 0) {
 				newRow1.add("Symbol");
 				newRow2.add("Timestamp");
 				newRow3.add("Period");
+				newRow4.add("Statement-Type");
+				newRow5.add("Period-Type");
 			} else {
 				newRow1.add(symbol);
 				newRow2.add(timestamp);
 				newRow3.add("T-" + i);
+				newRow4.add(typeOfStatement);
+				newRow5.add(periodType);
 			}
 		}
+		tableData.add(0, newRow5);
+		tableData.add(0, newRow4);
 		tableData.add(0, newRow3);
 		tableData.add(0, newRow2);
 		tableData.add(0, newRow1);
@@ -107,8 +122,9 @@ public class FundamentalScrape {
 			for (int i = 0; i < tableData.size(); i++) {
 				List<String> theTableRow = tableData.get(i);
 				Map<String, String> theSplitRow = new HashMap<String, String>();
-				// Each table contains, the first column as the name and the (k+1)th element as the value
-				theSplitRow.put(theTableRow.get(0), theTableRow.get(k+1));
+				// Each table contains, the first column as the name and the
+				// (k+1)th element as the value
+				theSplitRow.put(theTableRow.get(0), theTableRow.get(k + 1));
 				theSplitTable.add(theSplitRow);
 			}
 		}
@@ -150,10 +166,29 @@ public class FundamentalScrape {
 		}
 	}
 
+	public static JSONArray getSplitAndTaggedBalanceSheetData(String symbol,
+			String annualOrQuarterly) {
+		List<List<List<Map<String, String>>>> entireDataSet = new ArrayList<List<List<Map<String, String>>>>();
+		List<List<String>> theBalanceSheetData = getFinancialDataFromMoneyCentral(
+				symbol, annualOrQuarterly, "Balance");
+		List<List<String>> theCashFlowData = getFinancialDataFromMoneyCentral(
+				symbol, annualOrQuarterly, "CashFlow");
+		List<List<String>> theIncomeStatementData = getFinancialDataFromMoneyCentral(
+				symbol, annualOrQuarterly, "Income");
+		Date theDate = new Date(System.currentTimeMillis());
+		addPrefixes(theBalanceSheetData, symbol, theDate.toString(), "BalanceSheet", annualOrQuarterly);
+		addPrefixes(theCashFlowData, symbol, theDate.toString(), "CashFlow", annualOrQuarterly);
+		addPrefixes(theIncomeStatementData, symbol, theDate.toString(), "Income", annualOrQuarterly);
+		entireDataSet.add(splitIntoYearly(theBalanceSheetData));
+		entireDataSet.add(splitIntoYearly(theCashFlowData));
+		entireDataSet.add(splitIntoYearly(theIncomeStatementData));
+		return JSONArray.fromObject(entireDataSet);
+	}
+
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) throws Throwable {
+	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		List<List<String>> theBalanceSheetData = getFinancialDataFromMoneyCentral(
 				"CVV", "Ann", "Balance");
@@ -162,11 +197,12 @@ public class FundamentalScrape {
 		List<List<String>> theIncomeStatementData = getFinancialDataFromMoneyCentral(
 				"CVV", "Ann", "Income");
 		// printTabSeparated(theBalanceSheetData);
-		addPrefixes(theCashFlowData, "GOOG", "4/23/2010");
+		addPrefixes(theCashFlowData, "GOOG", "4/23/2010", "CashFlow", "Annual");
 		List<List<Map<String, String>>> theSplitData = splitIntoYearly(theCashFlowData);
-		//printTabSeparated(theSplitData.get(0));
-		System.out.println(theSplitData.get(0));
-		System.out.println(theSplitData.get(1));
+		// printTabSeparated(theSplitData.get(0));
+
+		System.out.println(JSONArray.fromObject(getSplitAndTaggedBalanceSheetData("GOOG", "Ann")));
+		// System.out.println(theSplitData.get(1));
 		// printTabSeparated(theIncomeStatementData);
 	}
 }
