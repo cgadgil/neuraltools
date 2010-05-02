@@ -1,6 +1,9 @@
 package net.gadgil.fundamental.screenscrape;
 
 //import java.sql.Date;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+
+import javax.management.RuntimeErrorException;
 
 import org.apache.commons.lang.time.DateUtils;
 
@@ -80,6 +85,25 @@ public class FundamentalScrape {
 		}
 	}
 
+	public static String readDataFromURL(String url) {
+		try {
+			URL theURL = new URL(url);
+			BufferedReader in = new BufferedReader(new InputStreamReader(theURL
+					.openStream()));
+			String inputLine;
+			String data = "";
+
+			while ((inputLine = in.readLine()) != null) {
+				data = data + inputLine + "\n";
+			}
+
+			in.close();
+			return data;
+		} catch (Throwable t) {
+			throw new RuntimeException(t);
+		}
+	}
+
 	public static void addPrefixes(List<List<String>> tableData, String symbol,
 			String timestamp, String typeOfStatement, String periodType) {
 		if (tableData.size() == 0) {
@@ -139,6 +163,7 @@ public class FundamentalScrape {
 					.get("Stmt Source Date");
 			String theHistoricalQuote = getHistoricalQuote(symbol,
 					theStatementSourceDate);
+			theSplitTable.put("Historical-Quote", theHistoricalQuote);
 		}
 		return theSplitTables;
 	}
@@ -234,8 +259,7 @@ public class FundamentalScrape {
 									.get(Calendar.MONTH), theCalendar
 									.get(Calendar.DATE), theCalendar
 									.get(Calendar.YEAR));
-			System.out.println(theURL);
-			return theURL;
+			return readDataFromURL(theURL);
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		}

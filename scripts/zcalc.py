@@ -12,6 +12,7 @@ def getAllTs(balanceSheet, cashFlow, income):
     t3 = float(income['Operating Income']) / float(balanceSheet['Total Assets'])
     t4 = float(balanceSheet['Total Equity']) / float(balanceSheet['Total Liabilities'])
     t5 = float(income['Total Revenue']) / float(balanceSheet['Total Assets'])
+    print balanceSheet['Historical-Quote']
     return t1, t2, t3, t4, t5
 
 def getZScore(t1, t2, t3, t4, t5):
