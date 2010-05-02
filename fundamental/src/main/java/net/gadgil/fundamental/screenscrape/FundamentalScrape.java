@@ -1,10 +1,17 @@
 package net.gadgil.fundamental.screenscrape;
 
-import java.sql.Date;
+//import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
+
+import org.apache.commons.lang.time.DateUtils;
 
 import net.sf.json.JSONArray;
 
@@ -107,30 +114,41 @@ public class FundamentalScrape {
 	}
 
 	// For each period (e.g. year), create a separate table
-	public static List<List<Map<String, String>>> splitIntoYearly(
+	public static List<Map<String, String>> splitIntoYearly(String symbol,
 			List<List<String>> tableData) {
-		List<List<Map<String, String>>> theSplitTables = new ArrayList<List<Map<String, String>>>();
+		List<Map<String, String>> theSplitTables = new ArrayList<Map<String, String>>();
 		if (tableData.size() == 0) {
 			return theSplitTables;
 		}
 		int numPeriods = tableData.get(0).size() - 1;
 		// Create an empty table for each period
 		for (int k = 0; k < numPeriods; k++) {
-			List<Map<String, String>> theSplitTable = new ArrayList<Map<String, String>>();
+			Map<String, String> theSplitTable = new HashMap<String, String>();
 			theSplitTables.add(theSplitTable);
 			// For each row of the original table
 			for (int i = 0; i < tableData.size(); i++) {
 				List<String> theTableRow = tableData.get(i);
-				Map<String, String> theSplitRow = new HashMap<String, String>();
+				// Map<String, String> theSplitRow = new HashMap<String,
+				// String>();
 				// Each table contains, the first column as the name and the
 				// (k+1)th element as the value
-				theSplitRow.put(theTableRow.get(0), theTableRow.get(k + 1));
-				theSplitTable.add(theSplitRow);
+				theSplitTable.put(theTableRow.get(0), theTableRow.get(k + 1));
+				// theSplitTable.add(theSplitRow);
 			}
+			String theStatementSourceDate = theSplitTable
+					.get("Stmt Source Date");
+			String theHistoricalQuote = getHistoricalQuote(symbol,
+					theStatementSourceDate);
 		}
 		return theSplitTables;
 	}
 
+	/**
+	 * Transpose rows/columns
+	 * 
+	 * @param tableData
+	 * @return
+	 */
 	public static List<List<String>> transposeListOfLists(
 			List<List<String>> tableData) {
 		List<List<String>> theData = new ArrayList<List<String>>();
@@ -168,41 +186,68 @@ public class FundamentalScrape {
 
 	public static JSONArray getSplitAndTaggedBalanceSheetData(String symbol,
 			String annualOrQuarterly) {
-		List<List<List<Map<String, String>>>> entireDataSet = new ArrayList<List<List<Map<String, String>>>>();
+		List<List<Map<String, String>>> entireDataSet = new ArrayList<List<Map<String, String>>>();
+		// Get basic table data
 		List<List<String>> theBalanceSheetData = getFinancialDataFromMoneyCentral(
 				symbol, annualOrQuarterly, "Balance");
 		List<List<String>> theCashFlowData = getFinancialDataFromMoneyCentral(
 				symbol, annualOrQuarterly, "CashFlow");
 		List<List<String>> theIncomeStatementData = getFinancialDataFromMoneyCentral(
 				symbol, annualOrQuarterly, "Income");
-		Date theDate = new Date(System.currentTimeMillis());
-		addPrefixes(theBalanceSheetData, symbol, theDate.toString(), "BalanceSheet", annualOrQuarterly);
-		addPrefixes(theCashFlowData, symbol, theDate.toString(), "CashFlow", annualOrQuarterly);
-		addPrefixes(theIncomeStatementData, symbol, theDate.toString(), "Income", annualOrQuarterly);
-		entireDataSet.add(splitIntoYearly(theBalanceSheetData));
-		entireDataSet.add(splitIntoYearly(theCashFlowData));
-		entireDataSet.add(splitIntoYearly(theIncomeStatementData));
+		String theTimeStamp = getGMTTimeStamp();
+		// Add prefixes (tags) to the downloaded data
+		addPrefixes(theBalanceSheetData, symbol, theTimeStamp, "BalanceSheet",
+				annualOrQuarterly);
+		addPrefixes(theCashFlowData, symbol, theTimeStamp, "CashFlow",
+				annualOrQuarterly);
+		addPrefixes(theIncomeStatementData, symbol, theTimeStamp, "Income",
+				annualOrQuarterly);
+		// Split each table into multiple tables - one for each period
+		entireDataSet.add(splitIntoYearly(symbol, theBalanceSheetData));
+		entireDataSet.add(splitIntoYearly(symbol, theCashFlowData));
+		entireDataSet.add(splitIntoYearly(symbol, theIncomeStatementData));
 		return JSONArray.fromObject(entireDataSet);
+	}
+
+	private static String getGMTTimeStamp() {
+		Date theDate = new Date(System.currentTimeMillis());
+		DateFormat df = new SimpleDateFormat("yyyy-MMMMM-dd HH:mm Z");
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		String theTimeStamp = df.format(theDate);
+		return theTimeStamp;
+	}
+
+	public static String getHistoricalQuote(String symbol, String date) {
+		try {
+			// http://finance.yahoo.com/q/hp?s=GE&a=00&b=4&c=2010&d=00&e=4&f=2010&g=d
+			// http://ichart.finance.yahoo.com/table.csv?s=GE&a=00&b=2&c=1962&d=04&e=2&f=2010&g=d&ignore=.csv
+			Date theParsedDate = DateUtils.parseDate(date,
+					new String[] { "MM/dd/yyyy" });
+			Calendar theCalendar = Calendar.getInstance();
+			theCalendar.setTime(theParsedDate);
+			String theURL = String
+					.format(
+							"http://ichart.finance.yahoo.com/table.csv?s=%s&a=%02d&b=%d&c=%d&d=%02d&e=%d&f=%d&g=d&ignore=.csv",
+							symbol, theCalendar.get(Calendar.MONTH),
+							theCalendar.get(Calendar.DATE), theCalendar
+									.get(Calendar.YEAR), theCalendar
+									.get(Calendar.MONTH), theCalendar
+									.get(Calendar.DATE), theCalendar
+									.get(Calendar.YEAR));
+			System.out.println(theURL);
+			return theURL;
+		} catch (Throwable t) {
+			throw new RuntimeException(t);
+		}
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		List<List<String>> theBalanceSheetData = getFinancialDataFromMoneyCentral(
-				"CVV", "Ann", "Balance");
-		List<List<String>> theCashFlowData = getFinancialDataFromMoneyCentral(
-				"GOOG", "Ann", "CashFlow");
-		List<List<String>> theIncomeStatementData = getFinancialDataFromMoneyCentral(
-				"CVV", "Ann", "Income");
-		// printTabSeparated(theBalanceSheetData);
-		addPrefixes(theCashFlowData, "GOOG", "4/23/2010", "CashFlow", "Annual");
-		List<List<Map<String, String>>> theSplitData = splitIntoYearly(theCashFlowData);
-		// printTabSeparated(theSplitData.get(0));
-
-		System.out.println(JSONArray.fromObject(getSplitAndTaggedBalanceSheetData("GOOG", "Ann")));
-		// System.out.println(theSplitData.get(1));
-		// printTabSeparated(theIncomeStatementData);
+		JSONArray theSplitAndTaggedBalanceSheetData = getSplitAndTaggedBalanceSheetData(
+				"GOOG", "Ann");
+		System.out.println(JSONArray
+				.fromObject(theSplitAndTaggedBalanceSheetData));
 	}
 }
