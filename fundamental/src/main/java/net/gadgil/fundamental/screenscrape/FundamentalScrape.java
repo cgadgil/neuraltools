@@ -270,7 +270,7 @@ public class FundamentalScrape {
 	 */
 	public static void main(String[] args) {
 		JSONArray theSplitAndTaggedBalanceSheetData = getSplitAndTaggedBalanceSheetData(
-				"GOOG", "Ann");
+				"CSCO", "Ann");
 		System.out.println(JSONArray
 				.fromObject(theSplitAndTaggedBalanceSheetData));
 	}
