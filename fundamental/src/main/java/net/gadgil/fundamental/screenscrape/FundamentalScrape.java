@@ -19,6 +19,7 @@ import javax.management.RuntimeErrorException;
 import org.apache.commons.lang.time.DateUtils;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.Page;

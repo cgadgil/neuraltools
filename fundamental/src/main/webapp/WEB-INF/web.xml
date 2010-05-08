@@ -7,6 +7,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>fundamental</servlet-name>
-    <url-pattern>/fundie</url-pattern>
+    <url-pattern>/fundie/*</url-pattern>
   </servlet-mapping>
 </web-app>

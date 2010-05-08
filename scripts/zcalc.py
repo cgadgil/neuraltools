@@ -22,3 +22,11 @@ def getZScore(t1, t2, t3, t4, t5):
     #Z = 1.2T1 + 1.4T2 + 3.3T3 + 0.6T4 + 0.999T5
     z = 1.2*t1 + 1.4*t2 + 3.3*t3 + 0.6*t4 + 0.999*t5
     return z
+
+def getDataForSymbol(symbol, periodType):
+    x = urllib2.urlopen("http://localhost:8080/fundamental/fundie/CSCO/Qtr")
+    xxx = x.read()
+    yyy = json.loads(xxx, strict=False)
+    len(yyy)
+    yyy = yyy['data']
+    apply(getZScore, getAllTs(yyy[0][1], yyy[1][1], yyy[2][1]))
