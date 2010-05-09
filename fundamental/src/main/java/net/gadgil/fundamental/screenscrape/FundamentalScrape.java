@@ -210,6 +210,15 @@ public class FundamentalScrape {
 		}
 	}
 
+	/**
+	 * 
+	 * @param symbol
+	 * @param annualOrQuarterly
+	 * @return Returns an array containing 3 elements - 1st element contains the
+	 *         balance sheet - 2nd element contains the cashflow - 3rd element
+	 *         contains the income statement Each element contains (typically) 5
+	 *         elements in turn - one for each period going backward
+	 */
 	public static JSONArray getSplitAndTaggedBalanceSheetData(String symbol,
 			String annualOrQuarterly) {
 		List<List<Map<String, String>>> entireDataSet = new ArrayList<List<Map<String, String>>>();
