@@ -17,6 +17,7 @@ import java.util.TimeZone;
 import javax.management.RuntimeErrorException;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.slf4j.LoggerFactory;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -57,7 +58,8 @@ public class FundamentalScrape {
 							"").trim();
 					if (theText.isEmpty() || theText.length() == 1) {
 						if (row.size() > 0) {
-							System.err.println("Skipping data for " + row);
+							LoggerFactory.getLogger("fundamental-analysis")
+									.warn("Skipping data for " + row);
 						}
 						continue;
 					}
