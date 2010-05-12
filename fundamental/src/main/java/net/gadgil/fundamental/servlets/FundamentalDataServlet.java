@@ -37,6 +37,7 @@ public class FundamentalDataServlet extends HttpServlet {
 						thePeriodType);
 		JSONObject theOutputObj = new JSONObject();
 		theOutputObj.put("generated-id", UUID.randomUUID().toString());
+		theOutputObj.put("symbol", theSymbol);
 		theOutputObj.put("period-type", thePeriodType);
 		theOutputObj.put("data", theSplitAndTaggedBalanceSheetData);
 		// out.println(req.getPathTranslated());
