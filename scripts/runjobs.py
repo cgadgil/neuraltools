@@ -48,14 +48,16 @@ def processAllGMailItems():
     # connecting to the gmail imap server
     m = imaplib.IMAP4_SSL("imap.gmail.com")
     m.login(options.user, options.password)
-    m.select("[Gmail]/All Mail") # here you a can choose a mail box like INBOX instead
+    m.select("Inbox") # here you a can choose a mail box like INBOX instead
     # use m.list() to get all the mailboxes
-    resp, items = m.search(None, "ALL") # you could filter using the IMAP rules here (check http://www.example-code.com/csharp/imap-search-critera.asp)
+    resp, items = m.search(None, "UNDELETED") # you could filter using the IMAP rules here (check http://www.example-code.com/csharp/imap-search-critera.asp)
     items = items[0].split() # getting the mails id
     for emailid in items:
         processSingleEmailItem(m, emailid, options)
+        m.delete(emailid)
         m.store(emailid, '+FLAGS', '\\Deleted')
-        m.expunge()
+    m.expunge()
+    m.logout()
 
 
 if __name__ == '__main__':
