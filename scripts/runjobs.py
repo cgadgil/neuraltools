@@ -54,6 +54,8 @@ def processAllGMailItems():
     items = items[0].split() # getting the mails id
     for emailid in items:
         processSingleEmailItem(m, emailid, options)
+        m.store(emailid, '+FLAGS', '\\Deleted')
+        m.expunge()
 
 
 if __name__ == '__main__':
