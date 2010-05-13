@@ -32,10 +32,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>0.9.20</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.11</version>
 		</dependency>
+		<!--
+			dependency> <groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId> <version>0.9.20</version>
+			</dependency
+		-->
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
 			<artifactId>htmlunit</artifactId>
