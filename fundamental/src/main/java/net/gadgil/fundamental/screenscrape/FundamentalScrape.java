@@ -271,7 +271,7 @@ public class FundamentalScrape {
 									.get(Calendar.MONTH), theCalendar
 									.get(Calendar.DATE), theCalendar
 									.get(Calendar.YEAR));
-			return readDataFromURL(theURL);
+			return readDataFromURL(theURL).replace('\n', '|');
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		}
