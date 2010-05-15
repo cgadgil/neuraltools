@@ -1,4 +1,4 @@
-import sys, json
+import sys, json, urllib2, uuid, sqlite3
 
 #T1 = (Current Assets-Current Liabilities) / Total Assets
 #T2 = Retained Earnings / Total Assets
@@ -24,10 +24,9 @@ def getZScore(t1, t2, t3, t4, t5):
     return z
 
 def getDataForSymbol(symbol, periodType):
-    x = urllib2.urlopen("http://localhost:8080/fundamental/fundie/CSCO/Qtr")
+    x = urllib2.urlopen("http://localhost:8080/fundamental/fundie/%s/%s" % (symbol, periodType))
     xxx = x.read()
     yyy = json.loads(xxx, strict=False)
-    len(yyy)
     yyy = yyy['data']
     apply(getZScore, getAllTs(yyy[0][1], yyy[1][1], yyy[2][1]))
 
@@ -46,20 +45,21 @@ def generateInsertData(symbol, periodType, generatedId, statementType, statement
             insertValues.append((symbol, periodType, generatedId, periodSetNum, statementType, propertyName, propertyValue))
     return insertValues
 
-def storeInDB(dataSet, fileName):
+def storeInDB(dataSet):
     #[u'symbol', u'period-type', u'data', u'generated-id']
     #conn = sqlite3.connect('chetan.dataset.sqlite3.db')
+    fileName = str(uuid.uuid4()) + '.db'
     conn = sqlite3.connect(fileName)
     c = conn.cursor()
     # Create table
-    c.execute('create table dataset (symbol text, periodtype text, generatedid text, periodsetnum integer, statementtype text, propertyname text, propertyvalue text)')
+    c.execute('create table "dataset" (symbol varchar(256), periodtype varchar(256), generatedid varchar(256), periodsetnum integer, statementtype varchar(256), propertyname varchar(256), propertyvalue varchar(256))')
     # Insert a row of data
     symbol = dataSet['symbol']
     periodType = dataSet['period-type']
     generatedId = dataSet['generated-id']
-    balanceSheetDataSets = yyy['data'][0]
-    cashFlowDataSets = yyy['data'][1]
-    incomeSheetDataSets = yyy['data'][2]
+    balanceSheetDataSets = dataSet['data'][0]
+    cashFlowDataSets = dataSet['data'][1]
+    incomeSheetDataSets = dataSet['data'][2]
     #c.execute('insert into stocks values ('2006-01-05','BUY','RHAT',100,35.14)')
     sqlStr = 'insert into dataset (symbol, periodtype, generatedid, periodsetnum, statementtype, propertyname, propertyvalue) values (?, ?, ?, ?, ?, ?, ?)'
     c.executemany(sqlStr, generateInsertData(symbol, periodType, generatedId, 'BALANCE-SHEET', balanceSheetDataSets))
@@ -69,10 +69,17 @@ def storeInDB(dataSet, fileName):
     conn.commit()
     # We can also close the cursor if we are done with it
     c.close()
+    conn.close()
+    conn = sqlite3.connect(fileName)
+    dumpIter = conn.iterdump()
+    lines = [line for line in dumpIter]
+    conn.close()
+    print symbol
+    return lines
 
-def storeDataForSymbol(symbol):
-     fd = urllib2.urlopen("http://localhost:8080/fundamental/fundie/AA/Ann")
+def storeDataForSymbol(symbol, periodType):
+     fd = urllib2.urlopen("http://localhost:8080/fundamental/fundie/%s/%s" % (symbol, periodType))
      jsonStr = fd.read()
      fd.close()
-     dataSet = json.loads(xxx)
-     storeInDB(dataSet, 'c:/temp/dampu.sqlite.db')
+     dataSet = json.loads(jsonStr)
+     return storeInDB(dataSet)
