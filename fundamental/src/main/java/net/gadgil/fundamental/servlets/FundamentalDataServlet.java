@@ -33,13 +33,14 @@ public class FundamentalDataServlet extends HttpServlet {
 		String theSymbol = theRestParams[1];
 		String thePeriodType = theRestParams[2];
 		JSONArray theSplitAndTaggedBalanceSheetData = FundamentalScrape
-				.getSplitAndTaggedBalanceSheetData(theSymbol,
-						thePeriodType);
+				.getSplitAndTaggedFinancialData(theSymbol, thePeriodType);
 		JSONObject theOutputObj = new JSONObject();
 		theOutputObj.put("generated-id", UUID.randomUUID().toString());
 		theOutputObj.put("symbol", theSymbol);
 		theOutputObj.put("period-type", thePeriodType);
 		theOutputObj.put("data", theSplitAndTaggedBalanceSheetData);
+		// theOutputObj.put("number-of-periods",
+		// theSplitAndTaggedBalanceSheetData.get(0))
 		// out.println(req.getPathTranslated());
 		// out.println("SimpleServlet Executed");
 		out.print(theOutputObj.toString());

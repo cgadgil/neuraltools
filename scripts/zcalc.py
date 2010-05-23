@@ -77,17 +77,37 @@ def storeInDB(dataSet):
     print symbol
     return lines
 
+def getDataSetForSymbol(symbol, periodType):
+    fd = urllib2.urlopen("http://localhost:8080/fundamental/fundie/%s/%s" % (symbol, periodType))
+    jsonStr = fd.read()
+    fd.close()
+    dataSet = json.loads(jsonStr)
+    return dataSet
+
 def storeDataForSymbol(symbol, periodType):
-     fd = urllib2.urlopen("http://localhost:8080/fundamental/fundie/%s/%s" % (symbol, periodType))
-     jsonStr = fd.read()
-     fd.close()
-     dataSet = json.loads(jsonStr)
-     return storeInDB(dataSet)
+    dataSet = getDataSetForSymbol(symbol, periodType)
+    return storeInDB(dataSet)
 
 def getCommonDataFields(dataSet, balanceSheetFieldNames, cashFlowFieldNames, incomeStatementFieldNames):
-    # balanceSheet['Total Common Shares Outstanding'], balanceSheet['Historical-Quote'], balanceSheet['Total Current Assets'], balanceSheet['Total Assets']
-    # balanceSheet['Retained Earnings (Accumulated Deficit)'], balanceSheet['Total Assets'], balanceSheet['Total Liabilities']
-    # Total Current Liabilities, Total Equity
-    # income['Operating Income'], balanceSheet['Total Assets']
+    # Balance Sheet
+    #
+    # 'Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date'
+    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date')
+    #
+    # Income Statement
+    #
+    # 'Operating Income', 'Total Revenue', 'Gross Profit', 'Operating Income', 'Income Before Tax', 'Income After Tax', 'Net Income'
+    incomeStatementFieldNames = ('Operating Income', 'Total Revenue', 'Gross Profit', 'Operating Income', 'Income Before Tax', 'Income After Tax', 'Net Income')
+    #
+    # Cash Flow Statement
+    # 
+    # 'Depreciation/Depletion', 'Amortization', 'Deferred Taxes', 'Cash from Operating Activities','Cash from Investing Activities', 'Cash from Financing Activities', 'Net Change in Cash'
+    cashFlowFieldNames = ('Depreciation/Depletion', 'Amortization', 'Deferred Taxes', 'Cash from Operating Activities','Cash from Investing Activities', 'Cash from Financing Activities', 'Net Change in Cash')
+    symbol = dataSet['symbol']
+    periodType = dataSet['period-type']
+    generatedId = dataSet['generated-id']
+    balanceSheetDataSets = dataSet['data'][0]
+    cashFlowDataSets = dataSet['data'][1]
+    incomeSheetDataSets = dataSet['data'][2]
     pass
 

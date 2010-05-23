@@ -221,7 +221,7 @@ public class FundamentalScrape {
 	 *         contains the income statement Each element contains (typically) 5
 	 *         elements in turn - one for each period going backward
 	 */
-	public static JSONArray getSplitAndTaggedBalanceSheetData(String symbol,
+	public static JSONArray getSplitAndTaggedFinancialData(String symbol,
 			String annualOrQuarterly) {
 		List<List<Map<String, String>>> entireDataSet = new ArrayList<List<Map<String, String>>>();
 		// Get basic table data
@@ -281,7 +281,7 @@ public class FundamentalScrape {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		JSONArray theSplitAndTaggedBalanceSheetData = getSplitAndTaggedBalanceSheetData(
+		JSONArray theSplitAndTaggedBalanceSheetData = getSplitAndTaggedFinancialData(
 				"CSCO", "Ann");
 		System.out.println(JSONArray
 				.fromObject(theSplitAndTaggedBalanceSheetData));
