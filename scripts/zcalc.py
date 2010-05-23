@@ -83,3 +83,11 @@ def storeDataForSymbol(symbol, periodType):
      fd.close()
      dataSet = json.loads(jsonStr)
      return storeInDB(dataSet)
+
+def getCommonDataFields(dataSet, balanceSheetFieldNames, cashFlowFieldNames, incomeStatementFieldNames):
+    # balanceSheet['Total Common Shares Outstanding'], balanceSheet['Historical-Quote'], balanceSheet['Total Current Assets'], balanceSheet['Total Assets']
+    # balanceSheet['Retained Earnings (Accumulated Deficit)'], balanceSheet['Total Assets'], balanceSheet['Total Liabilities']
+    # Total Current Liabilities, Total Equity
+    # income['Operating Income'], balanceSheet['Total Assets']
+    pass
+
