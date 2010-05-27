@@ -8,7 +8,7 @@ import sys, json, urllib2, uuid, sqlite3
 
 def getAllTs(balanceSheet, cashFlow, income):
     numShares = float(balanceSheet['Total Common Shares Outstanding'])
-    closePrice = float(balanceSheet['Historical-Quote'].split('\n')[1].split(',')[4])
+    closePrice = float(balanceSheet['Historical-Quote'].split('|')[1].split(',')[4])
     marketCap = numShares * closePrice
     t1 = (float(balanceSheet['Total Current Assets']) - float(balanceSheet['Total Current Liabilities'])) / float(balanceSheet['Total Assets'])
     t2 = float(balanceSheet['Retained Earnings (Accumulated Deficit)']) / float(balanceSheet['Total Assets'])
@@ -16,7 +16,7 @@ def getAllTs(balanceSheet, cashFlow, income):
     t4 = marketCap / float(balanceSheet['Total Liabilities'])
     t5 = float(income['Total Revenue']) / float(balanceSheet['Total Assets'])
     #print balanceSheet['Historical-Quote']
-    return t1, t2, t3, t4, t5
+    return {'t1': t1, 't2': t2, 't3': t3, 't4': t4, 't5': t5}
 
 def getZScore(t1, t2, t3, t4, t5):
     #Z = 1.2T1 + 1.4T2 + 3.3T3 + 0.6T4 + 0.999T5
@@ -88,7 +88,10 @@ def storeDataForSymbol(symbol, periodType):
     dataSet = getDataSetForSymbol(symbol, periodType)
     return storeInDB(dataSet)
 
-def getCommonDataFields(dataSet, balanceSheetFieldNames, cashFlowFieldNames, incomeStatementFieldNames):
+def addValueToDict(dictObj, key, value):
+    dictObj[key] = value
+
+def getCommonDataFields(dataSet):
     # Balance Sheet
     #
     # 'Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date'
@@ -109,5 +112,13 @@ def getCommonDataFields(dataSet, balanceSheetFieldNames, cashFlowFieldNames, inc
     balanceSheetDataSets = dataSet['data'][0]
     cashFlowDataSets = dataSet['data'][1]
     incomeSheetDataSets = dataSet['data'][2]
-    pass
+    combinedRow = {}
+    for i in range(5):
+        balanceSheet = balanceSheetDataSets[i]
+        cashFlow = cashFlowDataSets[i]
+        income = incomeSheetDataSets[i]
+        [addValueToDict(combinedRow, name, balanceSheet[name]) for name in balanceSheetFieldNames]
+        [addValueToDict(combinedRow, name, cashFlow[name]) for name in cashFlowFieldNames]
+        [addValueToDict(combinedRow, name, income[name]) for name in incomeStatementFieldNames]
+        print getAllTs(balanceSheet, cashFlow, income), combinedRow
 
