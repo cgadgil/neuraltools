@@ -1,4 +1,4 @@
-import sys, json, urllib2, uuid, sqlite3
+import sys, json, urllib2, uuid, sqlite3, csv, StringIO
 
 #T1 = (Current Assets-Current Liabilities) / Total Assets
 #T2 = Retained Earnings / Total Assets
@@ -8,7 +8,8 @@ import sys, json, urllib2, uuid, sqlite3
 
 def getAllTs(balanceSheet, cashFlow, income):
     numShares = float(balanceSheet['Total Common Shares Outstanding'])
-    closePrice = float(balanceSheet['Historical-Quote'].split('|')[1].split(',')[4])
+    #closePrice = float(balanceSheet['Historical-Quote'].split('|')[1].split(',')[4])
+    closePrice = float(balanceSheet['Historical-Quote'])
     marketCap = numShares * closePrice
     t1 = (float(balanceSheet['Total Current Assets']) - float(balanceSheet['Total Current Liabilities'])) / float(balanceSheet['Total Assets'])
     t2 = float(balanceSheet['Retained Earnings (Accumulated Deficit)']) / float(balanceSheet['Total Assets'])
@@ -95,7 +96,7 @@ def getCommonDataFields(dataSet):
     # Balance Sheet
     #
     # 'Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date'
-    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date')
+    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Statement-Type', 'Period-Type')
     #
     # Income Statement
     #
@@ -112,13 +113,34 @@ def getCommonDataFields(dataSet):
     balanceSheetDataSets = dataSet['data'][0]
     cashFlowDataSets = dataSet['data'][1]
     incomeSheetDataSets = dataSet['data'][2]
-    combinedRow = {}
+    dataRows = []
     for i in range(5):
+        combinedRow = {}
         balanceSheet = balanceSheetDataSets[i]
         cashFlow = cashFlowDataSets[i]
         income = incomeSheetDataSets[i]
         [addValueToDict(combinedRow, name, balanceSheet[name]) for name in balanceSheetFieldNames]
         [addValueToDict(combinedRow, name, cashFlow[name]) for name in cashFlowFieldNames]
         [addValueToDict(combinedRow, name, income[name]) for name in incomeStatementFieldNames]
-        print getAllTs(balanceSheet, cashFlow, income), combinedRow
+        combinedRow.update(getAllTs(balanceSheet, cashFlow, income))
+        combinedRow['symbol'] = symbol
+        combinedRow['generated-id'] = generatedId
+        dataRows.append(combinedRow)
+    return dataRows
 
+def getDataRowsForAllSymbols(symbolList, periodType):
+    theStrFile = StringIO.StringIO()
+    first = True
+    for symbol in symbolList:
+        d = getDataSetForSymbol(symbol, periodType)
+        theDataRows = getCommonDataFields(d)
+        fieldNames = theDataRows[0].keys()
+        dw = csv.DictWriter(theStrFile, fieldNames, delimiter='\t')
+        if first:
+            fnd = {}
+            for fn in fieldNames:
+                fnd[fn] = fn
+            dw.writerow(fnd)
+            first = False
+        dw.writerows(theDataRows)
+    return theStrFile.getvalue()
