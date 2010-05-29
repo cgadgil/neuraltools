@@ -96,7 +96,7 @@ def getCommonDataFields(dataSet):
     # Balance Sheet
     #
     # 'Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date'
-    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Statement-Type', 'Period-Type')
+    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Period-Type')
     #
     # Income Statement
     #
@@ -106,7 +106,7 @@ def getCommonDataFields(dataSet):
     # Cash Flow Statement
     # 
     # 'Depreciation/Depletion', 'Amortization', 'Deferred Taxes', 'Cash from Operating Activities','Cash from Investing Activities', 'Cash from Financing Activities', 'Net Change in Cash'
-    cashFlowFieldNames = ('Depreciation/Depletion', 'Amortization', 'Deferred Taxes', 'Cash from Operating Activities','Cash from Investing Activities', 'Cash from Financing Activities', 'Net Change in Cash')
+    cashFlowFieldNames = ('Depreciation/Depletion', 'Amortization', 'Cash from Operating Activities','Cash from Investing Activities', 'Cash from Financing Activities', 'Net Change in Cash')
     symbol = dataSet['symbol']
     periodType = dataSet['period-type']
     generatedId = dataSet['generated-id']
@@ -132,15 +132,18 @@ def getDataRowsForAllSymbols(symbolList, periodType):
     theStrFile = StringIO.StringIO()
     first = True
     for symbol in symbolList:
-        d = getDataSetForSymbol(symbol, periodType)
-        theDataRows = getCommonDataFields(d)
-        fieldNames = theDataRows[0].keys()
-        dw = csv.DictWriter(theStrFile, fieldNames, delimiter='\t')
-        if first:
-            fnd = {}
-            for fn in fieldNames:
-                fnd[fn] = fn
-            dw.writerow(fnd)
-            first = False
-        dw.writerows(theDataRows)
+        try:
+            d = getDataSetForSymbol(symbol, periodType)
+            theDataRows = getCommonDataFields(d)
+            fieldNames = theDataRows[0].keys()
+            dw = csv.DictWriter(theStrFile, fieldNames, delimiter='\t')
+            if first:
+                fnd = {}
+                for fn in fieldNames:
+                    fnd[fn] = fn
+                dw.writerow(fnd)
+                first = False
+            dw.writerows(theDataRows)
+        except:
+            pass
     return theStrFile.getvalue()

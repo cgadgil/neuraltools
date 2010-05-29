@@ -163,7 +163,7 @@ public class FundamentalScrape {
 				// theSplitTable.add(theSplitRow);
 			}
 			String theStatementSourceDate = theSplitTable
-					.get("Stmt Source Date");
+					.get("Period End Date");
 			String theHistoricalQuote = getHistoricalQuote(symbol,
 					theStatementSourceDate);
 			theSplitTable.put("Historical-Quote", theHistoricalQuote);
@@ -262,22 +262,36 @@ public class FundamentalScrape {
 					new String[] { "MM/dd/yyyy" });
 			Calendar theCalendar = Calendar.getInstance();
 			theCalendar.setTime(theParsedDate);
-			String theURL = String
-					.format(
-							"http://ichart.finance.yahoo.com/table.csv?s=%s&a=%02d&b=%d&c=%d&d=%02d&e=%d&f=%d&g=d&ignore=.csv",
-							symbol, theCalendar.get(Calendar.MONTH),
-							theCalendar.get(Calendar.DATE), theCalendar
-									.get(Calendar.YEAR), theCalendar
-									.get(Calendar.MONTH), theCalendar
-									.get(Calendar.DATE), theCalendar
-									.get(Calendar.YEAR));
-			System.out.println(theURL);
-			//return readDataFromURL(theURL).replace('\n', '|');
-			//System.out.println(readDataFromURL(theURL));
-			return readDataFromURL(theURL).split("\n")[1].split(",")[4];
+			return getHistoricalQuoteDataNearDate(symbol, theCalendar);
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		}
+	}
+
+	private static String getHistoricalQuoteDataNearDate(String symbol,
+			Calendar theCalendar) {
+		for (int i = 0; i < 30; i++) {
+			try {
+				String theURL = String
+						.format(
+								"http://ichart.finance.yahoo.com/table.csv?s=%s&a=%02d&b=%d&c=%d&d=%02d&e=%d&f=%d&g=d&ignore=.csv",
+								symbol, theCalendar.get(Calendar.MONTH),
+								theCalendar.get(Calendar.DATE), theCalendar
+										.get(Calendar.YEAR), theCalendar
+										.get(Calendar.MONTH), theCalendar
+										.get(Calendar.DATE), theCalendar
+										.get(Calendar.YEAR));
+				//System.out.println(theURL);
+				theCalendar.add(Calendar.DATE, i);
+				// return readDataFromURL(theURL).replace('\n', '|');
+				// System.out.println(readDataFromURL(theURL));
+				return readDataFromURL(theURL).split("\n")[1].split(",")[4];
+			} catch (Exception ex) {
+				LoggerFactory.getLogger("TEST").warn("retrying", ex);
+			}
+		}
+		throw new RuntimeException("Could not find any data for " + symbol
+				+ " around " + theCalendar);
 	}
 
 	/**
