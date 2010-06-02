@@ -17,7 +17,7 @@ def getAllTs(balanceSheet, cashFlow, income):
     t4 = marketCap / float(balanceSheet['Total Liabilities'])
     t5 = float(income['Total Revenue']) / float(balanceSheet['Total Assets'])
     #print balanceSheet['Historical-Quote']
-    return {'t1': t1, 't2': t2, 't3': t3, 't4': t4, 't5': t5}
+    return {'X1': t1, 'X2': t2, 'X3': t3, 'X4': t4, 'X5': t5}
 
 def getZScore(t1, t2, t3, t4, t5):
     #Z = 1.2T1 + 1.4T2 + 3.3T3 + 0.6T4 + 0.999T5
