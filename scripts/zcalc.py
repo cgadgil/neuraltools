@@ -96,7 +96,7 @@ def getCommonDataFields(dataSet):
     # Balance Sheet
     #
     # 'Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date'
-    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Period-Type')
+    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Period-Type', 'Cash & Equivalents')
     #
     # Income Statement
     #
