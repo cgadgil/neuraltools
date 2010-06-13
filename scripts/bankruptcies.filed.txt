@@ -1,0 +1,104 @@
+1st Pacific Bancorp                     CA       1.03,2.04,8.01                 05/07/10
+ACCURIDE CORP                           DE       1.03,8.01,9.01                 02/18/10
+AMERICAN MORTGAGE ACCEPTANCE CO         MA       1.03                           04/26/10
+ANTHRACITE CAPITAL INC                  MD       1.03,9.01                      03/15/10
+APPALACHIAN BANCSHARES INC              GA       1.03,2.04                      01/20/10
+ATOMIC PAINTBALL INC                             1.03,5.01,5.02,8.01,9.01       01/08/10
+ATOMIC PAINTBALL INC                             1.03,5.01,5.02,8.01,9.01       01/20/10
+AVENTINE RENEWABLE ENERGY HOLDINGS IN   DE       1.01,1.03,9.01                 02/24/10
+Anpath Group, Inc.                      DE       1.01,1.03,3.02,9.01            05/20/10
+BANK OF FLORIDA CORP                    FL       1.03,8.01,9.01                 05/28/10
+BANK OF NEW ENGLAND CORP                MA       1.03                           12/31/09
+BEACH FIRST NATIONAL BANCSHARES INC     SC       1.03                           04/09/10
+BEACH FIRST NATIONAL BANCSHARES INC     SC       1.03                           05/14/10
+BEARINGPOINT INC                        DE       1.03,3.03,5.02,5.03,9.01          12/30/09
+BERTHEL GROWTH & INCOME TRUST I         DE       1.03,2.01,9.01                    03/04/10
+BUCKHEAD COMMUNITY BANCORP INC                   1.03                           12/31/09
+BioAuthorize Holdings, Inc.                      1.01,1.03,3.02                 06/04/10
+BioAuthorize Holdings, Inc.                      1.01,1.03,3.02,5.02,7.01,9.01  02/11/10
+CANARGO ENERGY CORP                     DE       1.01,1.02,1.03,2.01,3.01,3.03, 01/08/10
+CARBIZ INC                              A6       1.03,2.01,5.02                 02/12/10
+CERAGENIX PHARMACEUTICALS, INC.         DE       1.03                           06/02/10
+CERTIFIED DIABETIC SERVICES INC         DE       1.03,7.01                      05/07/10
+CHEM RX CORP                            DE       1.03,2.04,8.01,9.01            05/10/10
+CITADEL BROADCASTING CORP               DE       1.03,9.01                      05/19/10
+COLONIAL BANCGROUP INC                  DE       1.03                           06/07/10
+COLUMBIA BANCORP \OR\                   OR       1.03,3.01,5.02,8.01,9.01          01/22/10
+CONGOLEUM CORP                          DE       1.03,9.01                      06/07/10
+CROSS CANYON ENERGY CORP.               NV       1.03,8.01,9.01                 01/29/10
+CROSS CANYON ENERGY CORP.               NV       1.03,8.01,9.01                 03/22/10
+Cinnabar Ventures Inc                            1.01,1.03,3.02,9.01            01/26/10
+Cooper-Standard Holdings Inc.           DE       1.03,9.01                      05/24/10
+DGI RESOLUTION INC                      DE       1.03,3.03,5.01,5.02,9.01       05/27/10
+Dynamic Response Group, Inc.            FL       1.03,2.01,2.06,5.02,7.01,9.01  01/07/10
+EBHI Holdings, Inc.                     DE       1.03,9.01                      03/18/10
+EUROBANCSHARES INC                      PR       1.03,2.04,3.01                 04/30/10
+EVERGREENBANCORP INC                    WA       1.03,2.04,5.02                 05/28/10
+EVERGREENBANCORP INC                    WA       1.03,5.02,8.01,9.01            01/22/10
+FIRST REGIONAL BANCORP                  CA       1.03,9.01                      01/29/10
+FIRSTFED FINANCIAL CORP                 DE       1.03,2.04                      01/06/10
+FIRSTGOLD CORP.                         DE       1.03                           04/20/10
+FIRSTGOLD CORP.                         DE       1.03,5.02,9.01                    01/27/10
+FIRSTGOLD CORP.                         DE       1.03,9.01                      04/20/10
+FLORIDA COMMUNITY BANKS INC             FL       1.03,2.04                      01/29/10
+FREMONT GENERAL CORP                    NV       1.03,5.02,9.01                 05/25/10
+FRONTIER FINANCIAL CORP /WA/            WA       1.03,2.04,5.02,8.01,9.01       04/30/10
+FUTUREIT, INC.                          DE       1.03                           03/22/10
+FX Real Estate & Entertainment Inc.     DE       1.01,1.03,9.01                 04/16/10
+GSI GROUP INC                           A3       1.03,5.02,7.01,8.01,9.01       05/24/10
+HERBST GAMING INC                       NV       1.03,9.01                      01/22/10
+HORIZON FINANCIAL CORP                  WA       1.03,5.02,8.01,9.01            01/08/10
+IMPERIAL CAPITAL BANCORP, INC.          DE       1.03,9.01                         03/26/10
+IMPERIAL CAPITAL BANCORP, INC.          DE       1.03,9.01                      04/20/10
+LUNA INNOVATIONS INC                             1.03,5.02,9.01                 01/12/10
+MARCO COMMUNITY BANCORP INC             FL       1.03,5.02                      02/19/10
+MDI, INC.                               DE       1.03,4.01,5.02,8.01,9.01          03/26/10
+MDI, INC.                               DE       1.03,4.01,5.02,8.01,9.01       03/26/10    AMEND
+MESA AIR GROUP INC                      NV       1.03,2.04,3.01,9.01            01/05/10
+MIDWEST BANC HOLDINGS INC               DE       1.03,2.04,3.01,9.01            05/14/10
+MORRIS PUBLISHING GROUP LLC             GA       1.03,2.04,7.01,9.01            01/19/10
+MORRIS PUBLISHING GROUP LLC             GA       1.03,9.01                         02/17/10
+MiddleBrook Pharmaceuticals, Inc.                1.03,3.01,9.01                 04/30/10
+NEENAH ENTERPRISES, INC.                         1.01,1.03,2.03,2.04,9.01       02/03/10
+NOVA BIOSOURCE FUELS, INC.              NV       1.01,1.03,5.02,7.01,9.01       04/08/10
+ORLEANS HOMEBUILDERS INC                DE       1.03,2.04,8.01,9.01            03/01/10
+PDG ENVIRONMENTAL INC                   DE       1.03,2.04,5.02                    02/22/10
+PNG VENTURES INC                        NV       1.03,3.02,3.03,9.01            03/12/10
+POINT BLANK SOLUTIONS, INC.             DE       1.01,1.02,1.03,2.03,2.04,5.02, 04/12/10
+Protective Products of America, Inc.    DE       1.01,1.03,2.03,2.04,3.01,9.01  01/13/10
+Protective Products of America, Inc.    DE       1.03,3.01,3.03,5.02,8.01,9.01  01/19/09
+R H DONNELLEY CORP                      DE       1.03,8.01,9.01                 01/12/10
+R&G FINANCIAL CORP                      PR       1.01,1.03,2.04,8.01,9.01          04/27/10
+R&G FINANCIAL CORP                      PR       1.03,2.04,7.01,9.01            05/14/10
+RAINIER PACIFIC FINANCIAL GROUP INC     WA       1.03,5.02,8.01,9.01            02/26/10
+RAINIER PACIFIC FINANCIAL GROUP INC     WA       1.03,9.01                      05/26/10
+REGENT COMMUNICATIONS INC               DE       1.01,1.03,2.04,8.01,9.01       02/28/10
+REGENT COMMUNICATIONS INC               DE       1.03,8.01,9.01                 04/12/10
+SARATOGA RESOURCES INC /TX              TX       1.03,3.02,3.03,7.01,9.01       04/19/10
+SARS CORP.                              NV       1.03,8.01                      04/22/10
+SIX FLAGS, INC.                         DE       1.01,1.02,1.03,3.02,3.03,5.01, 04/29/10
+SMURFIT STONE CONTAINER CORP            DE       1.01,1.03,2.03,9.01            02/22/10
+SMURFIT STONE CONTAINER CORP            DE       1.01,1.03,2.03,9.01            04/15/10
+SONORAN ENERGY INC                      WA       1.03,5.02                      12/31/09
+Saint James CO                          NC       1.03,3.01,5.02,8.01,9.01       04/22/10
+Spansion Inc.                           DE       1.01,1.03,8.01,9.01            04/09/10
+TAMALPAIS BANCORP                                1.03                           04/16/10
+TETON ENERGY CORP                       DE       1.01,1.03,3.03,5.01,5.02,5.03, 01/20/10
+TLC VISION CORP                         A6       1.03,8.01,9.01                 05/06/10
+TRUMP ENTERTAINMENT RESORTS, INC.       DE       1.03,3.02,3.03,5.01,9.01          04/12/10
+TXCO Resources Inc                      DE       1.01,1.03,2.01,3.03,5.01,5.02, 02/11/10
+TXCO Resources Inc                      DE       1.03,3.03,9.01                    01/27/10
+US CONCRETE INC                         DE       1.03,2.04,3.01,7.01,9.01       04/29/10
+US DRY CLEANING CORP                    DE       1.03,9.01                         03/04/10
+VERMILLION, INC.                        DE       1.03,3.02,8.01,9.01            01/07/10
+VERMILLION, INC.                        DE       1.03,5.03,8.01,9.01            01/22/10
+VERTICAL BRANDING, INC.                 DE       1.03,9.01                         02/16/10
+VINEYARD NATIONAL BANCORP               CA       1.03,9.01                         05/14/10
+VINEYARD NATIONAL BANCORP               CA       1.03,9.01                      01/15/10
+VINEYARD NATIONAL BANCORP               CA       1.03,9.01                      02/16/10
+VINEYARD NATIONAL BANCORP               CA       1.03,9.01                      03/15/10
+VINEYARD NATIONAL BANCORP               CA       1.03,9.01                      04/15/10
+VION PHARMACEUTICALS INC                DE       1.03,3.03,5.01,5.02,9.01          04/07/10
+W HOLDING CO INC                        PR       1.03,3.01                      04/30/10
+WGNB CORP                               GA       1.03                           01/29/10
+XERIUM TECHNOLOGIES INC                 DE       1.03,2.04,7.01,9.01            03/30/10
