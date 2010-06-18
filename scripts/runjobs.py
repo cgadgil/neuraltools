@@ -1,4 +1,4 @@
-import email, getpass, imaplib, os, optparse, sys
+import email, getpass, imaplib, os, optparse, sys, uuid
 
 def parseArgs(args=sys.argv[1:]):
     parser = optparse.OptionParser()
@@ -35,9 +35,11 @@ def processSingleEmailItem(m, emailid, options):
         if not filename:
             filename = 'part-%03d%s' % (counter, 'bin')
             counter += 1
-        att_path = os.path.join(options.cachedir, filename)
+        path_prefix = os.path.join(options.cachedir, str(uuid.uuid4()))
+        att_path = os.path.join(path_prefix, filename)
+        os.makedirs(path_prefix)
         #Check if its already there
-        if not os.path.isfile(att_path) :
+        if not os.path.isfile(att_path):
             # finally write the stuff
             fp = open(att_path, 'wb')
             fp.write(part.get_payload(decode=True))
