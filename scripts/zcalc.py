@@ -149,3 +149,8 @@ def getDataRowsForAllSymbols(symbolList, periodType):
         except:
             pass
     return theStrFile.getvalue()
+
+if __name__ == '__main__':
+    periodType = sys.argv[1]
+    symbolList = sys.argv[2:]
+    print getDataRowsForAllSymbols(symbolList, periodType)
