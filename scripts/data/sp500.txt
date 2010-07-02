@@ -59,8 +59,6 @@ BMS
 BBY 
 BIG 
 BIIB 
-BJS 
-BDK 
 HRB 
 BMC 
 BA 
@@ -227,7 +225,6 @@ HCBK
 HUM 
 HBAN 
 ITW 
-RX 
 TEG 
 INTC 
 ICE 
