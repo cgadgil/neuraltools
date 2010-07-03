@@ -26,6 +26,16 @@ def getZScore(t1, t2, t3, t4, t5):
     z = 1.2*t1 + 1.4*t2 + 3.3*t3 + 0.6*t4 + 0.999*t5
     return z
 
+def getZPrimeScore(t1, t2, t3, t4prime, t5):
+    #Z' = 0.717T1 + 0.847T2 + 3.107T3 + 0.420T4 + 0.998T5
+    z = 0.717 * t1 + 0.847*t2 + 3.107*t3 + 0.42*t4prime + 0.998*t5
+    return z
+
+def getZDoublePrimeScore(t1, t2, t3, t4prime, t5):
+    #Z'' = 6.56T1 + 3.26T2 + 6.72T3 + 1.05T4
+    z = 6.56*t1 + 3.26*t2 + 6.72*t3 + 1.05*t4prime
+    return z
+
 def getDataForSymbol(symbol, periodType):
     x = urllib2.urlopen("http://localhost:8080/fundamental/fundie/%s/%s" % (symbol, periodType))
     xxx = x.read()
@@ -117,6 +127,7 @@ def getCommonDataFields(dataSet):
     incomeSheetDataSets = dataSet['data'][2]
     dataRows = []
     for i in range(5):
+        # for each period
         combinedRow = {}
         balanceSheet = balanceSheetDataSets[i]
         cashFlow = cashFlowDataSets[i]
@@ -124,9 +135,25 @@ def getCommonDataFields(dataSet):
         [addValueToDict(combinedRow, name, balanceSheet[name]) for name in balanceSheetFieldNames]
         [addValueToDict(combinedRow, name, cashFlow[name]) for name in cashFlowFieldNames]
         [addValueToDict(combinedRow, name, income[name]) for name in incomeStatementFieldNames]
-        combinedRow.update(getAllTs(balanceSheet, cashFlow, income))
+        # Get all Ts - to calculate various Z Scores
+        allTs = getAllTs(balanceSheet, cashFlow, income)
+        t1, t2, t3, t4, t4prime, t5 = allTs['X1'], allTs['X2'], allTs['X3'], allTs['X4'], allTs['X4prime'], allTs['X5']
+        zScore = getZScore(t1, t2, t3, t4, t5)
+        zPrimeScore = getZPrimeScore(t1, t2, t3, t4prime, t5)
+        zDoublePrimeScore = getZDoublePrimeScore(t1, t2, t3, t4prime, t5)
+        combinedRow.update(allTs)
+        combinedRow['zScore'] = zScore
+        combinedRow['zPrimeScore'] = zPrimeScore
+        combinedRow['zDoublePrimeScore'] = zDoublePrimeScore
         combinedRow['symbol'] = symbol
         combinedRow['generated-id'] = generatedId
+        # Calculate performance ratio
+        thePrice = float(combinedRow['Historical-Quote'])
+        combinedRow['zScore-to-price'] = zScore / thePrice
+        combinedRow['zPrimeScore-to-price'] = zPrimeScore / thePrice
+        combinedRow['zDoublePrimeScore-to-price'] = zDoublePrimeScore / thePrice
+        # pass
+        # append the combined row
         dataRows.append(combinedRow)
     return dataRows
 
@@ -146,8 +173,8 @@ def getDataRowsForAllSymbols(symbolList, periodType):
                 dw.writerow(fnd)
                 first = False
             dw.writerows(theDataRows)
-        except:
-            pass
+        except Exception as ex:
+            print >> sys.stderr, ex
     return theStrFile.getvalue()
 
 if __name__ == '__main__':
