@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 
 import javax.management.RuntimeErrorException;
 
@@ -35,12 +36,16 @@ public class FundamentalScrape {
 		try {
 			List<List<String>> theData = new ArrayList<List<String>>();
 			WebClient theWebClient = new WebClient(BrowserVersion.FIREFOX_3);
+			theWebClient.setPopupBlockerEnabled(true);
+			theWebClient.setRedirectEnabled(false);
+			String theMoneyCentralLink = "http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?Symbol="
+					+ symbol
+					+ "&lstStatement="
+					+ typeOfStatement
+					+ "&stmtView=" + annualOrQuarterly;
+			System.err.println("Downloading data from " + theMoneyCentralLink);
 			HtmlPage thePage = theWebClient
-					.getPage("http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?Symbol="
-							+ symbol
-							+ "&lstStatement="
-							+ typeOfStatement
-							+ "&stmtView=" + annualOrQuarterly);
+					.getPage(theMoneyCentralLink);
 			HtmlElement theHtmlElement = thePage
 					.getElementById("StatementDetails");
 			List<HtmlElement> theElements = theHtmlElement
