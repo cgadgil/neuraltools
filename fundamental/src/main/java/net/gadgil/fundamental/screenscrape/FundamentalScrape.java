@@ -33,19 +33,21 @@ public class FundamentalScrape {
 
 	public static List<List<String>> getFinancialDataFromMoneyCentral(
 			String symbol, String annualOrQuarterly, String typeOfStatement) {
+		WebClient theWebClient = new WebClient(BrowserVersion.FIREFOX_3);
+		theWebClient.setJavaScriptTimeout(2000);
+		theWebClient.setTimeout(5000);
+		theWebClient.setJavaScriptEnabled(false);
 		try {
 			List<List<String>> theData = new ArrayList<List<String>>();
-			WebClient theWebClient = new WebClient(BrowserVersion.FIREFOX_3);
 			theWebClient.setPopupBlockerEnabled(true);
-			theWebClient.setRedirectEnabled(false);
+			//theWebClient.setRedirectEnabled(false);
 			String theMoneyCentralLink = "http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?Symbol="
 					+ symbol
 					+ "&lstStatement="
 					+ typeOfStatement
 					+ "&stmtView=" + annualOrQuarterly;
-			System.err.println("Downloading data from " + theMoneyCentralLink);
-			HtmlPage thePage = theWebClient
-					.getPage(theMoneyCentralLink);
+			//System.err.println("Downloading data from " + theMoneyCentralLink);
+			HtmlPage thePage = theWebClient.getPage(theMoneyCentralLink);
 			HtmlElement theHtmlElement = thePage
 					.getElementById("StatementDetails");
 			List<HtmlElement> theElements = theHtmlElement
@@ -81,6 +83,8 @@ public class FundamentalScrape {
 			return theData;
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
+		} finally {
+			theWebClient.closeAllWindows();
 		}
 	}
 
@@ -286,7 +290,7 @@ public class FundamentalScrape {
 										.get(Calendar.MONTH), theCalendar
 										.get(Calendar.DATE), theCalendar
 										.get(Calendar.YEAR));
-				//System.out.println(theURL);
+				// System.out.println(theURL);
 				theCalendar.add(Calendar.DATE, i);
 				// return readDataFromURL(theURL).replace('\n', '|');
 				// System.out.println(readDataFromURL(theURL));
