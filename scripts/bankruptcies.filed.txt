@@ -34,6 +34,7 @@ CROSS CANYON ENERGY CORP.               NV       1.03,8.01,9.01                 
 DGI RESOLUTION INC                      DE       1.03,3.03,5.01,5.02,9.01       05/27/10
 Dynamic Response Group, Inc.            FL       1.03,2.01,2.06,5.02,7.01,9.01  01/07/10
 EBHI Holdings, Inc.                     DE       1.03,9.01                      03/18/10
+ECO2 PLASTICS INC                       DE       1.03,2.02,5.02                 06/28/10
 EUROBANCSHARES INC                      PR       1.03,2.04,3.01                 04/30/10
 EVERGREENBANCORP INC                    WA       1.03,2.04,5.02                 05/28/10
 EVERGREENBANCORP INC                    WA       1.03,5.02,8.01,9.01            01/22/10
