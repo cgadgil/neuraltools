@@ -40,13 +40,14 @@ public class FundamentalScrape {
 		try {
 			List<List<String>> theData = new ArrayList<List<String>>();
 			theWebClient.setPopupBlockerEnabled(true);
-			//theWebClient.setRedirectEnabled(false);
+			// theWebClient.setRedirectEnabled(false);
 			String theMoneyCentralLink = "http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?Symbol="
 					+ symbol
 					+ "&lstStatement="
 					+ typeOfStatement
 					+ "&stmtView=" + annualOrQuarterly;
-			//System.err.println("Downloading data from " + theMoneyCentralLink);
+			// System.err.println("Downloading data from " +
+			// theMoneyCentralLink);
 			HtmlPage thePage = theWebClient.getPage(theMoneyCentralLink);
 			HtmlElement theHtmlElement = thePage
 					.getElementById("StatementDetails");
@@ -176,6 +177,15 @@ public class FundamentalScrape {
 			String theHistoricalQuote = getHistoricalQuote(symbol,
 					theStatementSourceDate);
 			theSplitTable.put("Historical-Quote", theHistoricalQuote);
+
+			// Also get latest price
+			Calendar theCurrentCalendar = Calendar.getInstance();
+			// Start from 7 days before today
+			// Could be required when this is run on a holiday
+			theCurrentCalendar.add(Calendar.DATE, -7);
+			String theCurrentQuote = getHistoricalQuoteDataNearDate(symbol,
+					theCurrentCalendar);
+			theSplitTable.put("Current-Quote", theCurrentQuote);
 		}
 		return theSplitTables;
 	}

@@ -108,7 +108,7 @@ def getCommonDataFields(dataSet):
     # Balance Sheet
     #
     # 'Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date'
-    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Period-Type', 'Cash & Equivalents')
+    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Current-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Period-Type', 'Cash & Equivalents')
     #
     # Income Statement
     #
@@ -149,9 +149,13 @@ def getCommonDataFields(dataSet):
         combinedRow['generated-id'] = generatedId
         # Calculate performance ratio
         thePrice = float(combinedRow['Historical-Quote'])
+        theCurrentPrice = float(combinedRow['Current-Quote'])
         combinedRow['zScore-to-price'] = zScore / thePrice
         combinedRow['zPrimeScore-to-price'] = zPrimeScore / thePrice
         combinedRow['zDoublePrimeScore-to-price'] = zDoublePrimeScore / thePrice
+        combinedRow['zScore-to-current-price'] = zScore / theCurrentPrice
+        combinedRow['zPrimeScore-to-current-price'] = zPrimeScore / theCurrentPrice
+        combinedRow['zDoublePrimeScore-to-current-price'] = zDoublePrimeScore / theCurrentPrice
         # pass
         # append the combined row
         dataRows.append(combinedRow)
