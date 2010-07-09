@@ -23,6 +23,10 @@
 			<id>maven repository</id>
 			<url>http://mvnrepository.com</url>
 		</repository>
+		<repository>
+			<id>local repository</id>
+			<url>file://${basedir}</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -35,6 +39,11 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.5.11</version>
+		</dependency>
+		<dependency>
+			<groupId>flanagan.lib</groupId>
+			<artifactId>flanagan</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 		<!--
 			dependency> <groupId>ch.qos.logback</groupId>

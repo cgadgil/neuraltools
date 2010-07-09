@@ -12,6 +12,7 @@
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sourceforge/cssparser/cssparser/0.9.5/cssparser-0.9.5.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sf/ezmorph/ezmorph/1.0.6/ezmorph-1.0.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/flanagan/lib/flanagan/0.0.1/flanagan-0.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/google/collections/google-collections/1.0-rc5/google-collections-1.0-rc5.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sourceforge/htmlunit/htmlunit/2.7/htmlunit-2.7.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sourceforge/htmlunit/htmlunit-core-js/2.7/htmlunit-core-js-2.7.jar"/>
