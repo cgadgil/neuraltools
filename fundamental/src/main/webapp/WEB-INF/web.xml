@@ -5,6 +5,14 @@
     <servlet-name>fundamental</servlet-name>
     <servlet-class>net.gadgil.fundamental.servlets.FundamentalDataServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>regression</servlet-name>
+    <servlet-class>net.gadgil.fundamental.servlets.RegressionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>regression</servlet-name>
+    <url-pattern>/regression/*</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>fundamental</servlet-name>
     <url-pattern>/fundie/*</url-pattern>

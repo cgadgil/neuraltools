@@ -45,6 +45,11 @@
 			<artifactId>flanagan</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>drej.lib</groupId>
+			<artifactId>drej</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 		<!--
 			dependency> <groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId> <version>0.9.20</version>

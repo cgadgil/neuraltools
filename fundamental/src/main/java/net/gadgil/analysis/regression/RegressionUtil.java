@@ -23,6 +23,7 @@ public class RegressionUtil {
 		double[] yd1 = new double[] { 21, 32, 45, 51, 59 };
 		Regression theRegression = new Regression(xdata, ydata);
 		theRegression.linearGeneral();
+		//theRegression.
 		// theRegression.enterData(xxData, binWidth)
 		// System.out.println(theRegression.getAdjustedR2());
 		System.out.println(theRegression.getAdjustedR2());
