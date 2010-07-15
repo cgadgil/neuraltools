@@ -77,7 +77,7 @@ public class RegressionServlet extends HttpServlet {
 		Object[] oy = (Object[]) JSONArray.toArray(JSONArray.fromObject(yData));
 		double[][] xDataTable = this.getAsPrimitiveArray(ox);
 		double[] yDataTable = this.getAsPrimitiveArray(oy);
-		System.out.println(Arrays.toString(yDataTable));
+		//System.out.println(Arrays.toString(yDataTable));
 		// System.out.println(xData);
 		// System.out.println(yData);
 
@@ -113,6 +113,8 @@ public class RegressionServlet extends HttpServlet {
 		HashMap<String, Object> theResultData = new HashMap<String, Object>();
 		theResultData.put("coefficients", regr.getCoeff());
 		theResultData.put("sample-r-square", regr.getSampleR2());
+		theResultData.put("best-estimates", regr.getBestEstimates());
+		theResultData.put("best-estimates-errors", regr.getBestEstimatesErrors());
 		theResultData.put("residuals", regr.getResiduals());
 		return theResultData;
 	}
