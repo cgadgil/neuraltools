@@ -50,7 +50,11 @@ def printCSVInputSummary():
     print "Residuals: %s" % (str(result['residuals']))
 
 if __name__ == '__main__':
+    print "********************************************************************************"
+    print "Chetan Anil Gadgil's Data Analyzer"
+    print "********************************************************************************"
     printCSVInputSummary()
+    print "********************************************************************************"
 
     
     
