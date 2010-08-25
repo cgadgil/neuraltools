@@ -16,9 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.math.stat.descriptive.SummaryStatistics;
+import org.apache.commons.math.stat.descriptive.moment.Mean;
+import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
 import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression;
 
-import flanagan.analysis.Regression;
+//import flanagan.analysis.Regression;
 
 /**
  * @author cgadgil
@@ -81,7 +84,7 @@ public class RegressionServlet extends HttpServlet {
 		// System.out.println(xData);
 		// System.out.println(yData);
 
-		/*
+		
 		OLSMultipleLinearRegression theOLSMLR = new OLSMultipleLinearRegression();
 		theOLSMLR.newSampleData(yDataTable, xDataTable);
 		System.out.println("estimateRegressionParameters "
@@ -96,26 +99,22 @@ public class RegressionServlet extends HttpServlet {
 		System.out.println("estimateRegressionParametersStandardErrors "
 				+ Arrays.toString(theOLSMLR
 						.estimateRegressionParametersStandardErrors()));
-						*/
-		Regression theR = new Regression(this.transpose(xDataTable), yDataTable);
-		theR.linearGeneral();
-		// theR.getAdjustedR2();
-		theR.print();
+						
 		JSONObject theJSONObject = new JSONObject();
-		theJSONObject.put("result", this.getResultData(theR));
+		theJSONObject.put("result", this.getResultData(theOLSMLR));
 		PrintWriter thePrintWriter = resp.getWriter();
 		thePrintWriter.print(theJSONObject.toString());
 		thePrintWriter.close();
 		// super.doGet(req, resp);
 	}
 
-	private HashMap<String, Object> getResultData(Regression regr) {
+	private HashMap<String, Object> getResultData(OLSMultipleLinearRegression regr) {
 		HashMap<String, Object> theResultData = new HashMap<String, Object>();
-		theResultData.put("coefficients", regr.getCoeff());
-		theResultData.put("sample-r-square", regr.getSampleR2());
-		theResultData.put("best-estimates", regr.getBestEstimates());
-		theResultData.put("best-estimates-errors", regr.getBestEstimatesErrors());
-		theResultData.put("residuals", regr.getResiduals());
+		theResultData.put("regression-parameters", regr.estimateRegressionParameters());
+		theResultData.put("r-squared", regr.calculateRSquared());
+		theResultData.put("adjusted-r-squared", regr.calculateAdjustedRSquared());
+		theResultData.put("residuals", regr.estimateResiduals());
+		theResultData.put("error-variance", regr.estimateErrorVariance());
 		return theResultData;
 	}
 

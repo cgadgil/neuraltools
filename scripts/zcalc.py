@@ -168,7 +168,9 @@ def getDataRowsForAllSymbols(symbolList, periodType):
         try:
             d = getDataSetForSymbol(symbol, periodType)
             theDataRows = getCommonDataFields(d)
-            fieldNames = theDataRows[0].keys()
+            # sort field names for more predictable order
+            fieldNames = [i for i in theDataRows[0].keys()]
+            fieldNames.sort()
             dw = csv.DictWriter(theStrFile, fieldNames, delimiter='\t')
             if first:
                 fnd = {}
