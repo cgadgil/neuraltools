@@ -41,20 +41,22 @@ def printCSVInputSummary():
     regressionParameters = result['regression-parameters']
     intercept = regressionParameters[0]
     coeffecients = regressionParameters[1:]
+    print ""
+    print "Observed data fits the following equation"
     print "[%s] = %f" % (headerRow[numColumns - 1], intercept,),
     for i in range(0, numColumns - 1):
         print " + ([%s] * %f)" % (headerRow[i], coeffecients[i]),
-    print ""
+    print "\n"
     print "R Squared: %f" % (result['r-squared'])
     print "R Squared (Adj): %f" % (result['adjusted-r-squared'])
     print "Residuals: %s" % (str(result['residuals']))
 
 if __name__ == '__main__':
     print "********************************************************************************"
-    print "Chetan Anil Gadgil's Data Analyzer"
+    print "Chetan Anil Gadgil's Statistical Analyzer"
     print "********************************************************************************"
+    print "Expecting data from stdin..."
     printCSVInputSummary()
-    print "********************************************************************************"
 
     
     
