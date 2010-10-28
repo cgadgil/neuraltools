@@ -113,7 +113,7 @@ def getCommonDataFields(dataSet):
     # Income Statement
     #
     # 'Operating Income', 'Total Revenue', 'Gross Profit', 'Operating Income', 'Income Before Tax', 'Income After Tax', 'Net Income'
-    incomeStatementFieldNames = ('Operating Income', 'Total Revenue', 'Gross Profit', 'Operating Income', 'Income Before Tax', 'Income After Tax', 'Net Income', 'Depreciation/Amortization', 'Interest Expense (Income) Net Operating', 'Selling/General/Administrative Expenses Total', 'Cost of Revenue Total', 'Research & Development')
+    incomeStatementFieldNames = ('Operating Income', 'Total Revenue', 'Gross Profit', 'Operating Income', 'Income Before Tax', 'Income After Tax', 'Net Income', 'Depreciation/Amortization', 'Interest Expense (Income) Net Operating', 'Selling/General/Administrative Expenses Total', 'Cost of Revenue Total', 'Research & Development', 'Interest Expense (Income) Net Operating', 'Interest Expense Supplemental', 'Interest Income (Expense) Net Non-Operating')
     #
     # Cash Flow Statement
     # 
