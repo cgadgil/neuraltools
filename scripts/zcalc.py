@@ -36,7 +36,7 @@ def getZDoublePrimeScore(t1, t2, t3, t4prime, t5):
     z = 6.56*t1 + 3.26*t2 + 6.72*t3 + 1.05*t4prime
     return z
 
-def getDataForSymbol(symbol, periodType):
+def getDataForSymbol_obsolete(symbol, periodType):
     x = urllib2.urlopen("http://localhost:8080/fundamental/fundie/%s/%s" % (symbol, periodType))
     xxx = x.read()
     yyy = json.loads(xxx, strict=False)
@@ -108,12 +108,12 @@ def getCommonDataFields(dataSet):
     # Balance Sheet
     #
     # 'Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date'
-    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Current-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Period-Type', 'Cash & Equivalents')
+    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Current-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Period-Type', 'Cash & Equivalents', 'Accounts Payable', 'Total Receivables Net')
     #
     # Income Statement
     #
     # 'Operating Income', 'Total Revenue', 'Gross Profit', 'Operating Income', 'Income Before Tax', 'Income After Tax', 'Net Income'
-    incomeStatementFieldNames = ('Operating Income', 'Total Revenue', 'Gross Profit', 'Operating Income', 'Income Before Tax', 'Income After Tax', 'Net Income')
+    incomeStatementFieldNames = ('Operating Income', 'Total Revenue', 'Gross Profit', 'Operating Income', 'Income Before Tax', 'Income After Tax', 'Net Income', 'Depreciation/Amortization', 'Interest Expense (Income) Net Operating', 'Selling/General/Administrative Expenses Total')
     #
     # Cash Flow Statement
     # 
