@@ -108,7 +108,7 @@ def getCommonDataFields(dataSet):
     # Balance Sheet
     #
     # 'Total Common Shares Outstanding', 'Historical-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date'
-    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Current-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Period-Type', 'Cash & Equivalents', 'Accounts Payable', 'Total Receivables Net', 'Total Inventory', 'Accrued Expenses', 'Total Receivables Net')
+    balanceSheetFieldNames = ('Total Common Shares Outstanding', 'Historical-Quote', 'Current-Quote', 'Total Current Assets', 'Total Assets','Retained Earnings (Accumulated Deficit)', 'Total Assets', 'Total Liabilities', 'Total Current Liabilities', 'Total Equity', 'Period End Date', 'Timestamp', 'Period', 'Period-Type', 'Cash & Equivalents', 'Accounts Payable', 'Total Receivables Net', 'Total Inventory', 'Accrued Expenses', 'Total Receivables Net', 'Property/Plant/Equipment Total - Net')
     #
     # Income Statement
     #
@@ -118,7 +118,7 @@ def getCommonDataFields(dataSet):
     # Cash Flow Statement
     # 
     # 'Depreciation/Depletion', 'Amortization', 'Deferred Taxes', 'Cash from Operating Activities','Cash from Investing Activities', 'Cash from Financing Activities', 'Net Change in Cash'
-    cashFlowFieldNames = ('Depreciation/Depletion', 'Amortization', 'Cash from Operating Activities','Cash from Investing Activities', 'Cash from Financing Activities', 'Net Change in Cash', 'Changes in Working Capital')
+    cashFlowFieldNames = ('Depreciation/Depletion', 'Amortization', 'Cash from Operating Activities','Cash from Investing Activities', 'Cash from Financing Activities', 'Net Change in Cash', 'Changes in Working Capital', 'Net Cash - Beginning Balance', 'Net Cash - Ending Balance', 'Net Change in Cash')
     symbol = dataSet['symbol']
     periodType = dataSet['period-type']
     generatedId = dataSet['generated-id']

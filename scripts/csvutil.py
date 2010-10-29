@@ -19,6 +19,7 @@ def getHeaderAndContentsAsDictionaries(fd=sys.stdin, delimiter='\t'):
     return headerFields, rows
 
 def writeCSVContentsFromDictionaries(rows, fieldnames, fd=sys.stdout, delimiter='\t'):
+    fieldnames = [i.strip() for i in fieldnames]
     print >> fd, delimiter.join(fieldnames)
     dw = csv.DictWriter(fd, fieldnames=fieldnames, delimiter=delimiter)
     dw.writerows(rows)
@@ -28,15 +29,3 @@ def deleteColumn(columnNameToRemove, fd=sys.stdout, delimiter='\t'):
     headerFields.remove(columnNameToRemove)
     writeCSVContentsFromDictionaries(rows, headerFields, fd=fd, delimiter=delimiter)
 
-if __name__ == '__main__':
-    options, args = parseArgs(sys.argv[1:])
-    headerFields, rows = getHeaderAndContentsAsDictionaries(sys.stdin, options.delimiter)
-    fieldCount = len(headerFields)
-    fieldPrefixes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    for i in range(1, fieldCount + 1):
-        #print  i % 26, i / 26
-        if i <= 26:
-            prefix = fieldPrefixes[i % 26 - 1]
-        else:
-            prefix = fieldPrefixes[i / 26 - 1] + fieldPrefixes[i % 26 - 1]
-        print "%s = %s" % (prefix, headerFields[i-1])
