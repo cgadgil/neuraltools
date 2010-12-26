@@ -14,7 +14,7 @@ def getHeaderAndContentsAsDictionaries(fd=sys.stdin, delimiter='\t'):
     dr = csv.DictReader(contentsFileObj, delimiter=delimiter)
     rows = [row for row in dr]
     fd2 = cStringIO.StringIO(contents)
-    headerFields = fd2.readline().split(delimiter)
+    headerFields = [i.strip() for i in fd2.readline().split(delimiter)]
     fd2.close()
     return headerFields, rows
 
@@ -24,8 +24,18 @@ def writeCSVContentsFromDictionaries(rows, fieldnames, fd=sys.stdout, delimiter=
     dw = csv.DictWriter(fd, fieldnames=fieldnames, delimiter=delimiter)
     dw.writerows(rows)
 
-def deleteColumn(columnNameToRemove, fd=sys.stdout, delimiter='\t'):
-    headerFields, rows = getHeaderAndContentsAsDictionaries(fd)
-    headerFields.remove(columnNameToRemove)
-    writeCSVContentsFromDictionaries(rows, headerFields, fd=fd, delimiter=delimiter)
+def deleteColumn(columnNameToRemove, fdin=sys.stdin, fdout=sys.stdout, delimiter='\t'):
+    headerFields, rows = getHeaderAndContentsAsDictionaries(fdin)
+    #print headerFields
+    #headerFields.remove(columnNameToRemove)
+    #print rows[0]
+    writeCSVContentsFromDictionaries(rows, headerFields, fd=fdout, delimiter=delimiter)
+
+
+def extractColumn(columnNameToRemove, fdin=sys.stdin, fdout=sys.stdout, delimiter='\t'):
+    headerFields, rows = getHeaderAndContentsAsDictionaries(fdin)
+    deletedContents = cStringIO.StringIO()
+    #for 
+    writeCSVContentsFromDictionaries(rows, [columnNameToRemove], fd=deletedContents, delimiter=delimiter)
+    return deletedContents.getvalue()
 
