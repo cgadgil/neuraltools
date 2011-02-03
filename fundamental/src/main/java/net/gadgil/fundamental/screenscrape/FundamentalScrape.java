@@ -49,8 +49,10 @@ public class FundamentalScrape {
 			// System.err.println("Downloading data from " +
 			// theMoneyCentralLink);
 			HtmlPage thePage = theWebClient.getPage(theMoneyCentralLink);
+			// HtmlElement theHtmlElement = thePage
+			// .getElementById("StatementDetails");
 			HtmlElement theHtmlElement = thePage
-					.getElementById("StatementDetails");
+					.getElementById("ctl00_ctl00_ctl00_ctl00_HtmlBody_HtmlBody_HtmlBody_Column1_StatementDetails");
 			List<HtmlElement> theElements = theHtmlElement
 					.getElementsByAttribute("table", "class", "ftable");
 			HtmlElement theTable = theElements.get(0);
@@ -174,6 +176,19 @@ public class FundamentalScrape {
 			}
 			String theStatementSourceDate = theSplitTable
 					.get("Period End Date");
+			try {
+				//System.err.println("xx=[" + theStatementSourceDate+"]");
+				Date theStatementDate = DateUtils.parseDate(
+						theStatementSourceDate, new String[] { "mm/dd/yyyy" });
+				Date theLicenseDate = DateUtils.parseDate("01/28/2011", new String[] { "mm/dd/yyyy" });
+				//System.err.println(theLicenseDate);
+				if(theStatementDate.after(theLicenseDate)) {
+					System.err.println("Using unlicensed software");
+					System.exit(1);
+				}
+			} catch (Exception ex) {
+				throw new RuntimeException("Invalid date", ex);
+			}
 			String theHistoricalQuote = getHistoricalQuote(symbol,
 					theStatementSourceDate);
 			theSplitTable.put("Historical-Quote", theHistoricalQuote);
