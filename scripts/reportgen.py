@@ -8,7 +8,6 @@ theTemplateString = """
 <html>
 <head>MAGI CAPITAL INVESTMENT CLUB REPORT</head>
 <body>
-${lines}
 % for line in lines:
 <%
 SYMBOL = line.split()[0].strip()
@@ -40,6 +39,22 @@ RECOMMENDATION = line.split()[1].strip()
 </tr>
 </table>
 % endfor
+
+% for line in lines:
+<%
+SYMBOL = line.split()[0].strip()
+RECOMMENDATION = line.split()[1].strip()
+%>
+<h3>Data on ${SYMBOL}, recommendation ${RECOMMENDATION}</h3>
+<table>
+<tr>
+<td>
+<a href="http://www.advfn.com/p.php?pid=financials&symbol=${SYMBOL}">${SYMBOL}</a>
+</td>
+</tr>
+</table>
+% endfor
+
 </body>
 </html>
 """
