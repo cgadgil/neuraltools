@@ -1,6 +1,8 @@
 #/bin/env python
 
 import StringIO, sys, os, urllib2, lxml.etree
+from xml.sax.saxutils import escape
+import csvutil
 
 field_list_1 = ['PE Ratio - LTM', 'Market Capitalisation', 'Latest Shares Outstanding', 'Earnings pS (EPS)', 'Dividend pS (DPS)', 'Dividend Yield', 'Dividend Payout Ratio', 'Revenue per Employee', 'Effective Tax Rate', 'Float', 'Float as % of Shares Outstanding', 'Foreign Sales', 'Domestic Sales', 'Selling, General & Adm/tive (SG&A) as % of Revenue', 'Research & Devlopment (R&D) as % of Revenue', 'Gross Profit Margin', 'EBITDA Margin', 'Pre-Tax Profit Margin', 'Assets Turnover', 'Return on Assets (ROA)', 'Return on Equity (ROE)', 'Return on Capital Invested (ROCI)', 'Current Ratio', 'Leverage Ratio (Assets/Equity)', 'Interest Cover', 'Total Debt/Equity (Gearing Ratio)', 'LT Debt/Total Capital', 'Working Capital pS', 'Cash pS', 'Book-Value pS', 'Tangible Book-Value pS', 'Cash Flow pS', 'Free Cash Flow pS']
 
@@ -36,9 +38,11 @@ def getFieldText(xmlDocument, xpathString):
 def getFinData(xmlDocument, dataFieldName):
     # try an exact match first
     #x = xmlDocument.xpath('/query/results/body/form/table/tr/td/center/table/tr/td/table/tr/td/table/tr/td[p="%s"]/../td[2]/p/text()' % (dataFieldName,))
+    #dataFieldName = escape(dataFieldName)
     x = xmlDocument.xpath('//td[p="%s"]/../td[2]/p/text()' % (dataFieldName,))
-    if len(x) >= 1:
-        print "Incorrect number of matches found for field %s!!" % (dataFieldName,)
+    if len(x) > 1:
+        #print "Incorrect number of matches found for field %s!!" % (dataFieldName,)
+        pass
     return {dataFieldName: x[0]}
     # take only partial name to avoid whitespace issue
     #partialDataFieldName = dataFieldName[:16]
@@ -49,7 +53,30 @@ def getFinData(xmlDocument, dataFieldName):
     #    print "Incorrect number of matches found for field %s!!" % (partialDataFieldName,)
     #return {dataFieldName: x[0]}
 
+def getAllFieldPairs(symbol):
+    x = getData(symbol)
+    xmlDocument = getXmlDocument(x)
+    return [getFinData(xmlDocument, i) for i in field_list_1] + [getFinData(xmlDocument, i) for i in field_list_2] + [getFinData(xmlDocument, i) for i in field_list_3]
+
+def getAllFields(symbol):
+    x = getAllFieldPairs(symbol)
+    y = {}
+    for i in x:
+        y.update(i)
+    y['symbol'] = symbol
+    return y
+
+sorted_field_list = ['symbol', '5-Y Average P/E Ratio', '5-Y High P/E Ratio', '5-Y Low P/E Ratio', 'Accounts Payble/Sales', "Altman's Z-Score Ratio", 'Assets Productivity', 'Assets Turnover', 'Assets/Revenue', 'Average Collection Period', 'Book Value pS - LTM', 'Book-Value pS', 'Capital Invested Productivity', 'Capital Invested pS', 'Cash Conversion Cycle', 'Cash Flow pS', 'Cash Flow pS - LTM', 'Cash pS', 'Cash pS - LTM', 'Cash-Flow pS', 'Current 12 Month Normalized P/E Ratio - LTM', 'Current Liabilities pS', 'Current P/E Ratio - LTM', 'Current P/E Ratio as % of 5-Y Average P/E', 'Current Ratio', "Day's Inventory Turnover Ratio", 'Debt Ratio', 'Dividend Payout Ratio', 'Dividend Yield', 'Dividend pS (DPS)', 'Domestic Sales', 'EBIT Margin - LTM', 'EBITDA Margin', 'EBITDA Margin - LTM', 'Earnings pS (EPS)', 'Effective Tax Rate', 'Effective Tax Rate - 5YEAR AVRG.', 'Enterprise Value (EV)/EBITDA', 'Enterprise Value (EV)/Free Cash Flow', 'Equity Productivity', 'Financial Leverage Ratio (Assets/Equity)', 'Fixed Assets Turnover', 'Float', 'Float as % of Shares Outstanding', 'Foreign Sales', 'Free Cash Flow Margin', 'Free Cash Flow Margin 5YEAR AVG', 'Free Cash Flow pS', 'Free Cash Flow pS - LTM', 'Free Cash-Flow pS', 'Gross Profit Margin', 'Gross Profit Margin - 5YEAR AVRG.', 'Interest Cover', 'Interest/Capital Invested', 'Inventory Turnover', 'Inventory/Sales', 'LT Debt pS', 'LT Debt/Capital Invested', 'LT Debt/Equity', 'LT Debt/Total Capital', 'LT Debt/Total Liabilities', 'Latest Shares Outstanding', 'Leverage Ratio (Assets/Equity)', 'Liquidity Ratio (Cash)', 'Market Capitalisation', 'Net Income per Employee', 'Net Profit Margin', 'Net Profit Margin - 5YEAR AVRG.', 'Net Working Capital Ratio', 'Net Working Capital Turnover', 'P/E Ratio (1 month ago) - LTM', 'P/E Ratio (26 weeks ago) - LTM', 'P/E Ratio (52 weeks ago) - LTM', 'P/E as % of Industry Group', 'P/E as % of Sector Segment', 'PE Ratio - LTM', 'PQ Ratio', 'Pre-Tax Profit Margin', 'Pre-Tax Profit Margin - 5YEAR AVRG.', 'Price/Book Ratio', 'Price/Book Ratio - LTM', 'Price/Cash Flow', 'Price/Cash Flow Ratio', 'Price/Free Cash Flow', 'Price/Free Cash Flow Ratio - LTM', 'Price/Sales Ratio', 'Price/Tangible Book Ratio', 'Price/Tangible Book Ratio - LTM', 'Quick Ratio (Acid Test)', 'R&D Expense as % of Revenue - 5YEAR AVRG.', 'Receivables Turnover', 'Research & Devlopment (R&D) as % of Revenue', 'Return on Assets (ROA)', 'Return on Assets (ROA) - 5YEAR AVRG.', 'Return on Capital Invested (ROCI)', 'Return on Capital Invested (ROCI) - 5YEAR AVRG.', 'Return on Equity (ROE)', 'Return on Equity (ROE) - 5YEAR AVRG.', 'Revenue per $ Capital Invested', 'Revenue per $ Cash', 'Revenue per $ Common Equity', 'Revenue per $ Plant', 'Revenue per Employee', 'SG&A Expense as % of Revenue - 5YEAR AVRG.', 'Selling, General & Adm/tive (SG&A) as % of Revenue', 'Tangible Book Value pS - LTM', 'Tangible Book-Value pS', "Tobin's Q Ratio", 'Total Assets Turnover', 'Total Debt/Equity (Gearing Ratio)', 'Working Capital pS', 'Working Capital/Equity']
+
+def processSymbols(symbolList=sys.argv[1:]):
+    data = []
+    for theSymbol in symbolList:
+        theData = getAllFields(theSymbol)
+        data.append(theData)
+    return data
+
 if __name__ == '__main__':
-    t = getData('CSCO')
+    data = processSymbols(sys.argv[1:])
+    csvutil.writeCSVContentsFromDictionaries(data, sorted_field_list)
     #getData(t)
 
