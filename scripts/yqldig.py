@@ -66,7 +66,7 @@ def getFinData(xmlDocument, dataFieldName):
     elif dataFieldName == "Beta":
         try:
             theBeta = xmlDocument.xpath('//table/tr/td/p[span="Price"]/../../../tr[4]/td/p[1]')
-            print "HHHHHHHHHH" + str(theBeta[2].text.strip())
+            #print "HHHHHHHHHH" + str(theBeta[2].text.strip())
             theBeta = str(theBeta[2].text.strip())
         except:
             theBeta = "0"
@@ -74,10 +74,10 @@ def getFinData(xmlDocument, dataFieldName):
     elif dataFieldName == "52weekLow":
         try:
             theRange = xmlDocument.xpath('//table/tr/td/p[span="Price"]/../../../tr[4]/td/p[1]')
-            print "HHHHHHHHHH" + str(theRange[7].text.strip())
+            #print "HHHHHHHHHH" + str(theRange[7].text.strip())
             theRange = str(theRange[7].text.strip())
             theRange = theRange.split("-")[1].strip()
-            print "HHHHHHHHHH" + theRange
+            #print "HHHHHHHHHH" + theRange
         except:
             theRange = "0"
         return {"52weekLow": theRange}
@@ -85,10 +85,10 @@ def getFinData(xmlDocument, dataFieldName):
     elif dataFieldName == "52weekHigh":
         try:
             theRange = xmlDocument.xpath('//table/tr/td/p[span="Price"]/../../../tr[4]/td/p[1]')
-            print "HHHHHHHHHH" + str(theRange[7].text.strip())
+            #print "HHHHHHHHHH" + str(theRange[7].text.strip())
             theRange = str(theRange[7].text.strip())
             theRange = theRange.split("-")[0].strip()
-            print "HHHHHHHHHH" + theRange
+            #print "HHHHHHHHHH" + theRange
         except:
             theRange = "0"
         return {"52weekHigh": theRange}
@@ -122,7 +122,7 @@ def getAllFields(symbol):
         #y.update(fetchHotness(y['COMPANYNAME']))
         return y
     except Exception:
-        print >> sys.stderr, sys.exc_info()[0]
+        print >> sys.stderr, "Symbol [%s], [%s], [%s]" % (symbol, sys.exc_info()[0], sys.exc_info()[1])
         return None
 
 sorted_field_list = ['symbol', 'COMPANYNAME', 'LATESTPRICE', 'Beta', '52weekLow', '52weekHigh', '5-Y Average P/E Ratio', '5-Y High P/E Ratio', '5-Y Low P/E Ratio', 'Accounts Payble/Sales', "Altman's Z-Score Ratio", 'Assets Productivity', 'Assets Turnover', 'Assets/Revenue', 'Average Collection Period', 'Book Value pS - LTM', 'Book-Value pS', 'Capital Invested Productivity', 'Capital Invested pS', 'Cash Conversion Cycle', 'Cash Flow pS', 'Cash Flow pS - LTM', 'Cash pS', 'Cash pS - LTM', 'Cash-Flow pS', 'Current 12 Month Normalized P/E Ratio - LTM', 'Current Liabilities pS', 'Current P/E Ratio - LTM', 'Current P/E Ratio as % of 5-Y Average P/E', 'Current Ratio', "Day's Inventory Turnover Ratio", 'Debt Ratio', 'Dividend Payout Ratio', 'Dividend Yield', 'Dividend pS (DPS)', 'Domestic Sales', 'EBIT Margin - LTM', 'EBITDA Margin', 'EBITDA Margin - LTM', 'Earnings pS (EPS)', 'Effective Tax Rate', 'Effective Tax Rate - 5YEAR AVRG.', 'Enterprise Value (EV)/EBITDA', 'Enterprise Value (EV)/Free Cash Flow', 'Equity Productivity', 'Financial Leverage Ratio (Assets/Equity)', 'Fixed Assets Turnover', 'Float', 'Float as % of Shares Outstanding', 'Foreign Sales', 'Free Cash Flow Margin', 'Free Cash Flow Margin 5YEAR AVG', 'Free Cash Flow pS', 'Free Cash Flow pS - LTM', 'Free Cash-Flow pS', 'Gross Profit Margin', 'Gross Profit Margin - 5YEAR AVRG.', 'Interest Cover', 'Interest/Capital Invested', 'Inventory Turnover', 'Inventory/Sales', 'LT Debt pS', 'LT Debt/Capital Invested', 'LT Debt/Equity', 'LT Debt/Total Capital', 'LT Debt/Total Liabilities', 'Latest Shares Outstanding', 'Leverage Ratio (Assets/Equity)', 'Liquidity Ratio (Cash)', 'Market Capitalisation', 'Net Income per Employee', 'Net Profit Margin', 'Net Profit Margin - 5YEAR AVRG.', 'Net Working Capital Ratio', 'Net Working Capital Turnover', 'P/E Ratio (1 month ago) - LTM', 'P/E Ratio (26 weeks ago) - LTM', 'P/E Ratio (52 weeks ago) - LTM', 'P/E as % of Industry Group', 'P/E as % of Sector Segment', 'PE Ratio - LTM', 'PQ Ratio', 'Pre-Tax Profit Margin', 'Pre-Tax Profit Margin - 5YEAR AVRG.', 'Price/Book Ratio', 'Price/Book Ratio - LTM', 'Price/Cash Flow', 'Price/Cash Flow Ratio', 'Price/Free Cash Flow', 'Price/Free Cash Flow Ratio - LTM', 'Price/Sales Ratio', 'Price/Tangible Book Ratio', 'Price/Tangible Book Ratio - LTM', 'Quick Ratio (Acid Test)', 'R&D Expense as % of Revenue - 5YEAR AVRG.', 'Receivables Turnover', 'Research & Devlopment (R&D) as % of Revenue', 'Return on Assets (ROA)', 'Return on Assets (ROA) - 5YEAR AVRG.', 'Return on Capital Invested (ROCI)', 'Return on Capital Invested (ROCI) - 5YEAR AVRG.', 'Return on Equity (ROE)', 'Return on Equity (ROE) - 5YEAR AVRG.', 'Revenue per $ Capital Invested', 'Revenue per $ Cash', 'Revenue per $ Common Equity', 'Revenue per $ Plant', 'Revenue per Employee', 'SG&A Expense as % of Revenue - 5YEAR AVRG.', 'Selling, General & Adm/tive (SG&A) as % of Revenue', 'Tangible Book Value pS - LTM', 'Tangible Book-Value pS', "Tobin's Q Ratio", 'Total Assets Turnover', 'Total Debt/Equity (Gearing Ratio)', 'Working Capital pS', 'Working Capital/Equity']
@@ -139,7 +139,7 @@ def processSymbols_old(symbolList=sys.argv[1:]):
     return data
 
 def processSymbols(symbolList=sys.argv[1:]):
-    pool = multiprocessing.Pool(processes=25)
+    pool = multiprocessing.Pool(processes=50)
     return filter(None, pool.map(getAllFields, symbolList))
 
 #from pyGTrends import pyGTrends
