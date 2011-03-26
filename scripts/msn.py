@@ -1,4 +1,4 @@
-import StringIO, sys, os, urllib2, httplib, multiprocessing, re, time, optparse
+import StringIO, sys, os, urllib2, httplib, multiprocessing, re, time, optparse, datetime
 #from xml.sax.saxutils import escape
 from BeautifulSoup import BeautifulSoup
 
@@ -6,7 +6,7 @@ balanceSheetFieldList = ['Period End Date', 'Stmt Source Date', 'Cash and Short 
 
 incomeStatementFieldList=['Period End Date', 'Stmt Source Date', 'Revenue', 'Total Revenue', 'Cost of Revenue, Total', 'Gross Profit', 'Selling/General/Administrative Expenses, Total', 'Research & Development', 'Depreciation/Amortization', 'Interest Expense (Income), Net Operating', 'Unusual Expense (Income)', 'Other Operating Expenses, Total', 'Operating Income', 'Interest Income (Expense), Net Non-Operating', 'Gain (Loss) on Sale of Assets', 'Other, Net', 'Income Before Tax', 'Income Tax - Total', 'Income After Tax', 'Minority Interest', 'Equity In Affiliates', 'U.S. GAAP Adjustment', 'Net Income Before Extra. Items', 'Total Extraordinary Items', 'Net Income']
 
-cashFlowStatementFieldList = ['Period End Date', 'Stmt Source Date', 'Net Income/Starting Line', 'Depreciation/Depletion', 'Amortization', 'Non-Cash Items', 'Other Non-Cash Items', 'Changes in Working Capital', 'Cash from Operating Activities', 'Capital Expenditures', 'Purchase of Fixed Assets', 'Other Investing Cash Flow Items, Total', 'Acquisition of Business', 'Sale/Maturity of Investment', 'Cash from Investing Activities', 'Financing Cash Flow Items', 'Other Financing Cash Flow', 'Total Cash Dividends Paid', 'Issuance (Retirement) of Stock, Net', 'Issuance (Retirement) of Debt, Net', 'Cash from Financing Activities', 'Foreign Exchange Effects', 'Net Change in Cash', 'Net Cash - Beginning Balance', 'Net Cash - Ending Balance']
+cashFlowStatementFieldList = ['Period End Date', 'Stmt Source Date', 'Net Income/Starting Line', 'Depreciation/Depletion', 'Amortization', 'Non-Cash Items', 'Other Non-Cash Items', 'Changes in Working Capital', 'Cash from Operating Activities', 'Capital Expenditures', 'Purchase of Fixed Assets', 'Other Investing Cash Flow Items, Total', 'Cash from Investing Activities', 'Financing Cash Flow Items', 'Other Financing Cash Flow', 'Total Cash Dividends Paid', 'Issuance (Retirement) of Stock, Net', 'Issuance (Retirement) of Debt, Net', 'Cash from Financing Activities', 'Foreign Exchange Effects', 'Net Change in Cash', 'Net Cash - Beginning Balance', 'Net Cash - Ending Balance']
 
 def parseArgs(args):
     parser = optparse.OptionParser()
@@ -18,6 +18,27 @@ def parseArgs(args):
 def getStatementField(xmlDocument, fieldName):
     r = re.compile('^' + re.escape(fieldName), re.I)
     return xmlDocument.findAll(text=fieldName)
+
+def getHistoricalQuote(symbol, dateStr, tryDays=10):
+    # dateStr in %m/%d/%Y format
+    #"http://finance.yahoo.com/q/hp?s=GE&a=05&b=2&c=2010&d=05&e=2&f=2010&g=d"
+    #"http://ichart.finance.yahoo.com/table.csv?s=GE&a=05&b=2&c=2010&d=05&e=2&f=2010&g=d&ignore=.csv"
+    for i in range(tryDays):
+        try:
+            #import pdb
+            #pdb.set_trace()
+            dt = datetime.datetime.strptime(dateStr, '%m/%d/%Y')
+            dt = dt - datetime.timedelta(-1*i)
+            url = "http://ichart.finance.yahoo.com/table.csv?s=%s&a=%d&b=%d&c=%d&d=%d&e=%d&f=%d&g=d&ignore=.csv" % (symbol, dt.month-1, dt.day, dt.year, dt.month-1, dt.day, dt.year)
+            fd = urllib2.urlopen(url)
+            theCSV = fd.read()
+            thePrice = theCSV.split("\n")[1].split(",")[4]
+            fd.close()
+            #print thePrice
+            return thePrice
+        except:
+            print sys.exc_info()
+    return "0"
 
 def getHtmlSoup(url):
     fd = urllib2.urlopen(url)
@@ -53,6 +74,9 @@ def getXmlString(symbol, xmlDocument, period, fieldList, statementType, label, t
         while theTR.name != "tr":
             theTR = theTR.parent
         theStr = theStr + "<%s>%s</%s>" % (i2, theTR.contents[period].text, i2)
+        if i == 'Stmt Source Date':
+            theStr = theStr + "<latest-price>" + getHistoricalQuote(symbol, theTR.contents[period].text) + "</latest-price>"
+            #print theStr
     theStr = theStr + "</%s>" % (statementType,)
     return theStr
 
@@ -67,7 +91,7 @@ def getStatements(symbol, tag):
     for i in range(1, 6):
         bss.append(getXmlString(symbol, bs, i, balanceSheetFieldList, "balance-sheet", label, tag))
         cfss.append(getXmlString(symbol, cfs, i, cashFlowStatementFieldList, "cash-flow-statement", label, tag))
-        incss.append(getXmlString(symbol, incS, 1, incomeStatementFieldList, "income-statement", label, tag))
+        incss.append(getXmlString(symbol, incS, i, incomeStatementFieldList, "income-statement", label, tag))
     return (bss, cfss, incss)
 
 def writeFile(tag, fileName, contents, outdir):
@@ -80,15 +104,22 @@ def writeFile(tag, fileName, contents, outdir):
     fd.close()
 
 def writeStatements(symbol, tag, outdir):
-    bss, cfss, incss = getStatements(symbol, tag)
-    writeFile(tag, symbol + "-balance-sheets.xml", "<balance-sheets>" + "\n".join(bss) + "</balance-sheets>", outdir)
-    writeFile(tag, symbol + "-income-statement.xml", "<income-statements>" + "\n".join(incss) + "</income-statements>", outdir)
-    writeFile(tag, symbol + "-cash-flows.xml", "<cash-flows>" + "\n".join(cfss) + "</cash-flows>", outdir)
+    try:
+        bss, cfss, incss = getStatements(symbol, tag)
+        writeFile(tag, symbol + "-balance-sheets.xml", "<balance-sheets>" + "\n".join(bss) + "</balance-sheets>", outdir)
+        writeFile(tag, symbol + "-income-statement.xml", "<income-statements>" + "\n".join(incss) + "</income-statements>", outdir)
+        writeFile(tag, symbol + "-cash-flows.xml", "<cash-flows>" + "\n".join(cfss) + "</cash-flows>", outdir)
+    except:
+        print "error processing [%s], ignoring" % (symbol,) + str(sys.exc_info())
+
+def ww(*k):
+    print k[0]
+    apply(writeStatements, k[0])
 
 def processSymbols(symbolList, tag, outdir):
-    def f(symbol):
-        writeStatements(symbol, tag, outdir)
-    map(f, symbolList)
+    pool = multiprocessing.Pool(processes=10)
+    #map(ww, [(i, tag, outdir) for i in symbolList])
+    return filter(None, pool.map(ww, [(i, tag, outdir) for i in symbolList]))
 
 if __name__ == '__main__':
     opts, args = parseArgs(sys.argv[1:])
