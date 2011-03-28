@@ -58,7 +58,30 @@ def getCashFlowStatement(symbol):
     url = "http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?lstStatement=CashFlow&stmtView=Ann&Symbol=US%3a" + symbol
     return getHtmlSoup(url)
 
-def getXmlString(symbol, xmlDocument, period, fieldList, statementType, label, tag):
+def getStatementDictionary(symbol, xmlDocument, period, fieldList, statementType, label, tag):
+    theDict = {}
+    for i in fieldList:
+        #print i
+        #i2 = re.sub("[ &\(\)/,\']", "__", i).lower()
+        theNode = xmlDocument.find(text=i)
+        if not theNode:
+            raise Exception('Failed to find field [%s] for symbol[%s] and statement type [%s]' % (i, symbol, statementType))
+        theTR = theNode.parent.parent
+        while theTR.name != "tr":
+            theTR = theTR.parent
+        theDict[i] = theTR.contents[period].text
+        if i == 'Stmt Source Date':
+            theDict['price'] = getHistoricalQuote(symbol, theTR.contents[period].text)
+            #print theStr
+    #theStr = theStr + "</%s>" % (statementType,)
+    theDict["statement-type"] = statementType
+    theDict["label"] = label
+    theDict["tag"] = tag
+    theDict["period"] = str(period)
+    theDict["symbol"] = symbol
+    return theDict
+
+def getXmlString_old(symbol, xmlDocument, period, fieldList, statementType, label, tag):
     theStr = "<%s>" % (statementType,)
     theStr = theStr + "<time-stamp>" + str(label) + "</time-stamp>"
     theStr = theStr + "<tag>" + tag + "</tag>"
@@ -81,6 +104,7 @@ def getXmlString(symbol, xmlDocument, period, fieldList, statementType, label, t
     return theStr
 
 def getStatements(symbol, tag):
+    "get statements for the last 5 periods. returns a tuple containing 3 lists - the balance sheets, the cash flows and the income statements"
     label = str(time.time())
     bs = getBalanceSheet(symbol)
     cfs = getCashFlowStatement(symbol)
@@ -89,10 +113,18 @@ def getStatements(symbol, tag):
     cfss = []
     incss = []
     for i in range(1, 6):
-        bss.append(getXmlString(symbol, bs, i, balanceSheetFieldList, "balance-sheet", label, tag))
-        cfss.append(getXmlString(symbol, cfs, i, cashFlowStatementFieldList, "cash-flow-statement", label, tag))
-        incss.append(getXmlString(symbol, incS, i, incomeStatementFieldList, "income-statement", label, tag))
+        bss.append(getStatementDictionary(symbol, bs, i, balanceSheetFieldList, "balance-sheet", label, tag))
+        cfss.append(getStatementDictionary(symbol, cfs, i, cashFlowStatementFieldList, "cash-flow-statement", label, tag))
+        incss.append(getStatementDictionary(symbol, incS, i, incomeStatementFieldList, "income-statement", label, tag))
     return (bss, cfss, incss)
+
+def getXmlTags(dictContents):
+    "get xml tags for given dictionary contents. the dictionary keys are mangled to be xml compliant"
+    theStr = ""
+    for i in dictContents.keys():
+        i2 = re.sub("[ &\(\)/,\']", "__", i).lower()
+        theStr = theStr + "<%s>%s</%s>" % (i2, dictContents[i], i2)
+    return theStr
 
 def writeFile(tag, fileName, contents, outdir):
     try:
@@ -106,9 +138,16 @@ def writeFile(tag, fileName, contents, outdir):
 def writeStatements(symbol, tag, outdir):
     try:
         bss, cfss, incss = getStatements(symbol, tag)
-        writeFile(tag, symbol + "-balance-sheets.xml", "<balance-sheets>" + "\n".join(bss) + "</balance-sheets>", outdir)
-        writeFile(tag, symbol + "-income-statement.xml", "<income-statements>" + "\n".join(incss) + "</income-statements>", outdir)
-        writeFile(tag, symbol + "-cash-flows.xml", "<cash-flows>" + "\n".join(cfss) + "</cash-flows>", outdir)
+        for i in range(5):
+            xx = {}
+            xx.update(bss[i])
+            xx.update(cfss[i])
+            xx.update(incss[i])
+            theStr = getXmlTags(xx)
+            writeFile(tag, symbol + "-data." + str(i+1) + ".xml", "<data>%s</data>" % (theStr), outdir)
+        #writeFile(tag, symbol + "-balance-sheets.xml", "<balance-sheets>" + "\n".join(bss) + "</balance-sheets>", outdir)
+        #writeFile(tag, symbol + "-income-statement.xml", "<income-statements>" + "\n".join(incss) + "</income-statements>", outdir)
+        #writeFile(tag, symbol + "-cash-flows.xml", "<cash-flows>" + "\n".join(cfss) + "</cash-flows>", outdir)
     except:
         print "error processing [%s], ignoring" % (symbol,) + str(sys.exc_info())
 
