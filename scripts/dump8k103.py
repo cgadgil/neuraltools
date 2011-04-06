@@ -6,7 +6,7 @@ import time, urllib2, sys
 
 def getDataForDate(timeStampSeconds=time.time()):
     found = []
-    secUrl = time.strftime('http://www.sec.gov/news/digest/2010/dig%m%d%y-8k.txt', time.localtime(timeStampSeconds))
+    secUrl = time.strftime('http://www.sec.gov/news/digest/2011/dig%m%d%y-8k.txt', time.localtime(timeStampSeconds))
     fd = urllib2.urlopen(secUrl)
     for line in fd:
         if line.count('1.03') != 0:

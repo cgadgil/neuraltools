@@ -46,6 +46,13 @@ def getHtmlSoup(url):
     fd.close()
     return BeautifulSoup(r)
 
+def getSummaryData(symbol):
+    url = 'http://investing.money.msn.com/investments/stock-price?symbol=US%3a' + symbol
+    x = getHtmlSoup(url)
+    theLow = x.find(text=re.compile('52-Wk Low')).parent.parent.parent.contents[3].span.text
+    theHigh = x.find(text=re.compile('52-Wk High')).parent.parent.parent.contents[3].span.text
+    return {'52-Wk High': theHigh, '52-Wk Low': theLow }
+
 def getBalanceSheet(symbol):
     url = "http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?lstStatement=Balance&stmtView=Ann&Symbol=US%3a" + symbol
     return getHtmlSoup(url)
@@ -74,11 +81,12 @@ def getStatementDictionary(symbol, xmlDocument, period, fieldList, statementType
             theDict['price'] = getHistoricalQuote(symbol, theTR.contents[period].text)
             #print theStr
     #theStr = theStr + "</%s>" % (statementType,)
-    theDict["statement-type"] = statementType
+    #theDict["statement-type"] = statementType
     theDict["label"] = label
     theDict["tag"] = tag
     theDict["period"] = str(period)
     theDict["symbol"] = symbol
+    theDict.update(getSummaryData(symbol))
     return theDict
 
 def getXmlString_old(symbol, xmlDocument, period, fieldList, statementType, label, tag):
@@ -123,7 +131,7 @@ def getXmlTags(dictContents):
     theStr = ""
     for i in dictContents.keys():
         i2 = re.sub("[ &\(\)/,\']", "__", i).lower()
-        theStr = theStr + "<%s>%s</%s>" % (i2, dictContents[i], i2)
+        theStr = theStr + "<%s>%s</%s>" % (i2, dictContents[i].replace(",", ""), i2)
     return theStr
 
 def writeFile(tag, fileName, contents, outdir):
