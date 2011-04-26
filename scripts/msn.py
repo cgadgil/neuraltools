@@ -47,11 +47,19 @@ def getHtmlSoup(url):
     return BeautifulSoup(r)
 
 def getSummaryData(symbol):
+    url = 'http://finance.yahoo.com/q/ks?s=' + symbol
+    x = getHtmlSoup(url)
+    theLow = x.find(text=re.compile('52-Week Low')).parent.parent.contents[1].text
+    theHigh = x.find(text=re.compile('52-Week High')).parent.parent.contents[1].text
+    theBeta = x.find(text=re.compile('Beta:')).parent.parent.contents[1].text
+    return {'summary-52-Wk High': theHigh, 'summary-52-Wk Low': theLow, 'Beta': theBeta }
+
+def getSummaryData_old(symbol):
     url = 'http://investing.money.msn.com/investments/stock-price?symbol=US%3a' + symbol
     x = getHtmlSoup(url)
     theLow = x.find(text=re.compile('52-Wk Low')).parent.parent.parent.contents[3].span.text
     theHigh = x.find(text=re.compile('52-Wk High')).parent.parent.parent.contents[3].span.text
-    return {'52-Wk High': theHigh, '52-Wk Low': theLow }
+    return {'summary-52-Wk High': theHigh, 'summary-52-Wk Low': theLow }
 
 def getBalanceSheet(symbol):
     url = "http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?lstStatement=Balance&stmtView=Ann&Symbol=US%3a" + symbol
