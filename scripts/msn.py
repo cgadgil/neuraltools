@@ -28,7 +28,7 @@ def getHistoricalQuote(symbol, dateStr, tryDays=10):
             #import pdb
             #pdb.set_trace()
             dt = datetime.datetime.strptime(dateStr, '%m/%d/%Y')
-            dt = dt - datetime.timedelta(-1*i)
+            dt = dt - datetime.timedelta(1*i)
             url = "http://ichart.finance.yahoo.com/table.csv?s=%s&a=%d&b=%d&c=%d&d=%d&e=%d&f=%d&g=d&ignore=.csv" % (symbol, dt.month-1, dt.day, dt.year, dt.month-1, dt.day, dt.year)
             fd = urllib2.urlopen(url)
             theCSV = fd.read()
@@ -37,6 +37,7 @@ def getHistoricalQuote(symbol, dateStr, tryDays=10):
             #print thePrice
             return thePrice
         except:
+            print "getHistoricalQuote for symbol [%s]" % (symbol,),
             print sys.exc_info()
     return "0"
 
@@ -95,6 +96,7 @@ def getStatementDictionary(symbol, xmlDocument, period, fieldList, statementType
     theDict["period"] = str(period)
     theDict["symbol"] = symbol
     theDict.update(getSummaryData(symbol))
+    theDict["latest-price"] = getHistoricalQuote(symbol, datetime.date.today().strftime("%m/%d/%Y"))
     return theDict
 
 def getXmlString_old(symbol, xmlDocument, period, fieldList, statementType, label, tag):
@@ -172,7 +174,7 @@ def ww(*k):
     apply(writeStatements, k[0])
 
 def processSymbols(symbolList, tag, outdir):
-    pool = multiprocessing.Pool(processes=10)
+    pool = multiprocessing.Pool(processes=5)
     #map(ww, [(i, tag, outdir) for i in symbolList])
     return filter(None, pool.map(ww, [(i, tag, outdir) for i in symbolList]))
 
